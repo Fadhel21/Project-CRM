@@ -18,6 +18,8 @@ function wajib(nama) {
 module.exports = {
   uji,
   produksi: process.env.NODE_ENV === 'production',
+  // Panel akun demo di halaman login: hanya bila DEMO_LOGIN=1 DAN bukan produksi
+  demoLogin: process.env.DEMO_LOGIN === '1' && process.env.NODE_ENV !== 'production',
   zonaWaktu,
   port: Number(process.env.PORT || 3000),
   databaseUrl: uji ? wajib('DATABASE_URL_TEST') : wajib('DATABASE_URL'),

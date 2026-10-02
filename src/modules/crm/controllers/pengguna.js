@@ -1,6 +1,7 @@
 // Controller login/logout dan pengelolaan pengguna
 const penggunaService = require('../services/pengguna');
 const { buatSesi, hapusSesi } = require('../../../middleware/auth');
+const { akunDemoTampil } = require('../../../config/demo');
 
 // Pembatas percobaan login sederhana di memori: maks 10 gagal per 15 menit per IP+email
 const percobaan = new Map();
@@ -28,7 +29,7 @@ function catatGagal(kunci) {
 }
 
 function formLogin(req, res) {
-  res.render('login', { judul: 'Masuk', galat: null, email: '' });
+  res.render('login', { akunDemo: akunDemoTampil(), judul: 'Masuk', galat: null, email: '' });
 }
 
 async function login(req, res, next) {
@@ -36,13 +37,13 @@ async function login(req, res, next) {
     const { email = '', password = '' } = req.body;
     const kunci = kunciPercobaan(req);
     if (terkunci(kunci)) {
-      return res.status(429).render('login', {
+      return res.status(429).render('login', { akunDemo: akunDemoTampil(),
         judul: 'Masuk', email, galat: 'Terlalu banyak percobaan gagal. Coba lagi 15 menit lagi.' });
     }
     const pengguna = await penggunaService.verifikasiLogin(email.trim(), password);
     if (!pengguna) {
       catatGagal(kunci);
-      return res.status(401).render('login', { judul: 'Masuk', email, galat: 'Email atau password salah.' });
+      return res.status(401).render('login', { akunDemo: akunDemoTampil(), judul: 'Masuk', email, galat: 'Email atau password salah.' });
     }
     percobaan.delete(kunci);
     buatSesi(res, pengguna);

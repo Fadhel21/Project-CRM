@@ -83,11 +83,11 @@
       <% if (galat) { %><div class="notif notif-galat" role="alert"><%= galat %></div><% } %>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label for="email">Email
-        <input id="email" type="email" name="email" value="<%= email %>" required autofocus autocomplete="username" placeholder="nama@perusahaan.co.id">
+        <input id="email" x-ref="email" type="email" name="email" value="<%= email %>" required autofocus autocomplete="username" placeholder="nama@perusahaan.co.id">
       </label>
       <label for="password">Password
         <span class="medan-sandi">
-          <input id="password" :type="lihat ? 'text' : 'password'" type="password" name="password" required autocomplete="current-password">
+          <input id="password" x-ref="sandi" :type="lihat ? 'text' : 'password'" type="password" name="password" required autocomplete="current-password">
           <button type="button" class="tombol-ikon" @click="lihat = !lihat" :aria-label="lihat ? 'Sembunyikan password' : 'Tampilkan password'" aria-label="Tampilkan password">
             <svg x-show="!lihat" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             <svg x-show="lihat" x-cloak width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.9 17.9A10 10 0 0 1 12 20C5 20 1 12 1 12a18 18 0 0 1 5.1-5.9M9.9 4.2A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.2 3.2M1 1l22 22"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/></svg>
@@ -98,6 +98,28 @@
         <span x-text="kirim ? 'Memproses…' : 'Masuk'">Masuk</span>
       </button>
       <p class="catatan-login">Lupa password? Hubungi admin CRM Anda.</p>
+
+      <% if (akunDemo.length) { %>
+        <section class="akun-demo" aria-labelledby="judul-demo">
+          <div class="baris antara">
+            <h2 id="judul-demo">Akun demo</h2>
+            <span class="lencana lencana-peringatan">Hanya untuk uji coba</span>
+          </div>
+          <p class="redup kecil-demo">Klik salah satu untuk langsung masuk. Password semua akun: <code><%= akunDemo[0].password %></code></p>
+          <ul>
+            <% akunDemo.forEach(a => { %>
+              <li>
+                <button type="button" class="pilih-demo" data-email="<%= a.email %>" data-sandi="<%= a.password %>"
+                  @click="$refs.email.value = $el.dataset.email; $refs.sandi.value = $el.dataset.sandi; $refs.sandi.form.requestSubmit()">
+                  <span class="peran-demo peran-<%= a.peran %>"><%= a.peran %></span>
+                  <span class="info-demo"><strong><%= a.email %></strong><small><%= a.ket %></small></span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </li>
+            <% }) %>
+          </ul>
+        </section>
+      <% } %>
     </form>
   </section>
 </main>

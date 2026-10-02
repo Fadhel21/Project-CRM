@@ -10,7 +10,8 @@
     "worker": "node worker/index.js",
     "migrate": "node scripts/migrate.js",
     "seed": "node scripts/seed.js",
-    "test": "node tests/run.js"
+    "test": "node tests/run.js",
+    "seed:demo": "node scripts/seed-demo.js"
   },
   "engines": {
     "node": ">=20"

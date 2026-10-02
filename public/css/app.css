@@ -237,6 +237,24 @@ dl.ringkas .total { font-weight: 700; font-size: 1.1rem; color: var(--utama-gela
 .medan-sandi .tombol-ikon { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); color: var(--slate-500); }
 .catatan-login { margin-top: var(--s-5); font-size: .85rem; color: var(--redup); text-align: center; }
 
+/* Panel akun demo */
+.akun-demo { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px dashed var(--slate-300); }
+.akun-demo h2 { font-size: .95rem; margin: 0; }
+.akun-demo ul { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: 6px; }
+.kecil-demo { font-size: .82rem; margin: var(--s-1) 0 0; }
+.kecil-demo code { background: var(--permukaan-2); padding: 1px 6px; border-radius: 4px; color: var(--navy-900); }
+.pilih-demo { display: flex; align-items: center; gap: var(--s-3); width: 100%; min-height: 48px; padding: var(--s-2) var(--s-3); font: inherit; text-align: left; color: var(--teks); background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius-sm); cursor: pointer; transition: border-color var(--cepat), background var(--cepat), transform var(--cepat); }
+.pilih-demo:hover { border-color: var(--utama); background: var(--utama-lembut); }
+.pilih-demo:hover svg { transform: translateX(2px); color: var(--utama); }
+.pilih-demo svg { color: var(--slate-500); transition: transform var(--cepat); flex-shrink: 0; }
+.info-demo { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.3; }
+.info-demo strong { font-size: .88rem; overflow: hidden; text-overflow: ellipsis; }
+.info-demo small { color: var(--redup); font-size: .78rem; }
+.peran-demo { flex: 0 0 68px; text-align: center; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 3px 0; border-radius: 999px; }
+.peran-admin { background: var(--navy-900); color: #fff; }
+.peran-manajer { background: var(--biru-100); color: var(--biru-800); }
+.peran-sales { background: var(--sukses-lembut); color: var(--sukses); }
+
 /* Animasi ilustrasi (CSS murni) */
 .ilustrasi .orbit { transform-origin: 260px 190px; animation: putar 28s linear infinite; }
 .ilustrasi .orbit-balik { transform-origin: 260px 190px; animation: putar 40s linear infinite reverse; }
