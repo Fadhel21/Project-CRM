@@ -55,7 +55,7 @@ async function hapus(req, res, next) {
   }
 }
 
-const LABEL_FILTER = { terlambat: 'Terlambat', hari_ini: 'Hari ini', mendatang: 'Mendatang', terbuka: 'Semua terbuka', selesai: 'Selesai' };
+const LABEL_FILTER = { terbuka: 'Semua terbuka', terlambat: 'Terlambat', hari_ini: 'Hari ini', mendatang: 'Mendatang', selesai: 'Selesai' };
 
 async function daftarTugas(req, res, next) {
   try {

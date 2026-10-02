@@ -13,6 +13,7 @@ const leadService = require('./services/lead');
 const deal = require('./controllers/deal');
 const dealService = require('./services/deal');
 const aktivitas = require('./controllers/aktivitas');
+const aktivitasService = require('./services/aktivitas');
 const penawaran = require('./controllers/penawaran');
 const penawaranService = require('./services/penawaran');
 
@@ -26,6 +27,17 @@ r.post('/logout', pengguna.logout);
 
 // Semua route di bawah ini wajib login
 r.use(wajibLogin);
+
+// Lencana jumlah tugas di sidebar: hanya untuk halaman penuh (bukan potongan HTMX)
+r.use(async (req, res, next) => {
+  if (req.method !== 'GET' || req.get('HX-Request')) return next();
+  try {
+    res.locals.ringkasTugas = await aktivitasService.ringkasTugas(req.pengguna);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 r.get('/', laporan.beranda);
 
 // Pengguna & tim (admin)

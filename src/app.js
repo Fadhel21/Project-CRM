@@ -36,6 +36,8 @@ function buatApp() {
   app.use((req, res, next) => {
     res.locals.f = format;
     res.locals.jalur = req.path;
+    res.locals.urlSaatIni = req.originalUrl;
+    res.locals.ringkasTugas = { terlambat: 0, hariIni: 0 };
     res.locals.pengguna = null;
     next();
   });

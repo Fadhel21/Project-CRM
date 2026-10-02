@@ -10,6 +10,23 @@
 
   // ---- Komponen Alpine: baris item penawaran (tambah/hapus baris) ----
   // Total TIDAK dihitung di sini; setiap perubahan memicu pratinjau HTMX yang dihitung di SQL.
+  // ---- Komponen Alpine: grup sub menu sidebar (status buka/tutup diingat per browser) ----
+  document.addEventListener('alpine:init', function () {
+    window.Alpine.data('grupMenu', function (id, berisiAktif) {
+      var kunci = 'crm-menu-' + id;
+      var tersimpan = null;
+      try { tersimpan = window.localStorage.getItem(kunci); } catch (e) { tersimpan = null; }
+      return {
+        // Grup yang berisi halaman aktif selalu terbuka; lainnya mengikuti pilihan terakhir pengguna
+        buka: berisiAktif || tersimpan === '1',
+        ubah: function () {
+          this.buka = !this.buka;
+          try { window.localStorage.setItem(kunci, this.buka ? '1' : '0'); } catch (e) { /* abaikan */ }
+        },
+      };
+    });
+  });
+
   document.addEventListener('alpine:init', function () {
     window.Alpine.data('formPenawaran', function (awal) {
       var kosong = function () { return { nama: '', deskripsi: '', qty: '1', satuan: '', harga: '', diskon: '0' }; };
@@ -105,6 +122,26 @@
       });
     });
     document.body.addEventListener('htmx:afterSwap', function (e) { gambarGrafik(e.detail.target); });
+
+    // Saat HTMX mengganti URL (mis. filter tugas), sorotan sub menu sidebar ikut diperbarui
+    document.body.addEventListener('htmx:pushedIntoHistory', function () {
+      var kini = new URL(window.location.href);
+      var item = document.querySelectorAll('.item-sub');
+      var cocok = null;
+      item.forEach(function (a) {
+        var u = new URL(a.getAttribute('href'), window.location.origin);
+        if (u.pathname !== kini.pathname) return;
+        var sama = true;
+        u.searchParams.forEach(function (v, k) { if (kini.searchParams.get(k) !== v) sama = false; });
+        // Tautan tanpa query hanya cocok bila filter halaman kosong / bawaan
+        if (!u.search && kini.searchParams.get('filter') && kini.searchParams.get('filter') !== 'terbuka') sama = false;
+        if (sama && (!cocok || u.search.length > new URL(cocok.href).search.length)) cocok = a;
+      });
+      if (!cocok) return;
+      item.forEach(function (a) { a.classList.remove('aktif'); a.removeAttribute('aria-current'); });
+      cocok.classList.add('aktif');
+      cocok.setAttribute('aria-current', 'page');
+    });
   });
 
   document.addEventListener('DOMContentLoaded', function () {

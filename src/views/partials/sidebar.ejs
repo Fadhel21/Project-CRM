@@ -1,36 +1,88 @@
 <%
-  // Menu: [jalur, label, path ikon SVG, peran yang boleh melihat (kosong = semua)]
-  const menu = [
-    ['/', 'Dashboard','M3 12l9-9 9 9M5 10v10h14V10', []],
-    ['/tugas', 'Tugas & Jadwal', 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', []],
-    ['/pipeline', 'Pipeline', 'M3 3h5v18H3zM10 3h5v12h-5zM17 3h4v8h-4z', []],
-    ['/deal', 'Deal', 'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6', []],
-    ['/penawaran', 'Penawaran', 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M9 13h6M9 17h4', []],
-    ['/leads', 'Leads', 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z', []],
-    ['/kontak', 'Kontak', 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8', []],
-    ['/perusahaan', 'Perusahaan', 'M3 21h18M5 21V7l7-4 7 4v14M9 9h1M14 9h1M9 13h1M14 13h1M9 17h1M14 17h1', []],
-    ['/pengguna', 'Pengguna & Tim', 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8', ['admin']],
+  // Struktur menu. Item tanpa "anak" = tautan langsung; dengan "anak" = grup yang bisa dibuka-tutup.
+  // peran kosong = semua peran.
+  const url = new URL(urlSaatIni || '/', 'http://x');
+  const filterTugas = url.searchParams.get('filter') || 'terbuka';
+  const t = ringkasTugas || { terlambat: 0, hariIni: 0 };
+  const MENU = [
+    { url: '/', label: 'Dashboard', ikon: 'dashboard' },
+    { id: 'tugas', label: 'Tugas & Jadwal', ikon: 'tugas', lencana: t.terlambat, anak: [
+      { url: '/tugas', label: 'Semua terbuka', aktif: jalur === '/tugas' && filterTugas === 'terbuka' },
+      { url: '/tugas?filter=terlambat', label: 'Terlambat', lencana: t.terlambat, bahaya: true, aktif: jalur === '/tugas' && filterTugas === 'terlambat' },
+      { url: '/tugas?filter=hari_ini', label: 'Hari ini', lencana: t.hariIni, aktif: jalur === '/tugas' && filterTugas === 'hari_ini' },
+      { url: '/tugas?filter=mendatang', label: 'Mendatang', aktif: jalur === '/tugas' && filterTugas === 'mendatang' },
+      { url: '/tugas?filter=selesai', label: 'Selesai', aktif: jalur === '/tugas' && filterTugas === 'selesai' },
+    ] },
+    { id: 'penjualan', label: 'Penjualan', ikon: 'penjualan', anak: [
+      { url: '/pipeline', label: 'Pipeline', ikon: 'pipeline' },
+      { url: '/deal', label: 'Daftar deal', ikon: 'deal' },
+      { url: '/penawaran', label: 'Penawaran', ikon: 'penawaran' },
+    ] },
+    { id: 'pelanggan', label: 'Pelanggan', ikon: 'pelanggan', anak: [
+      { url: '/leads', label: 'Leads', ikon: 'lead' },
+      { url: '/kontak', label: 'Kontak', ikon: 'kontak' },
+      { url: '/perusahaan', label: 'Perusahaan', ikon: 'perusahaan' },
+    ] },
+    { id: 'admin', label: 'Administrasi', ikon: 'admin', peran: ['admin'], anak: [
+      { url: '/pengguna', label: 'Pengguna & Tim', ikon: 'pengguna' },
+    ] },
   ];
-  const aktif = (j) => j === '/' ? jalur === '/' : jalur.startsWith(j);
+  const cocok = (u) => (u === '/' ? jalur === '/' : jalur === u || jalur.startsWith(`${u}/`));
+  MENU.forEach((m) => (m.anak || []).forEach((a) => { if (a.aktif === undefined) a.aktif = cocok(a.url); }));
+  const boleh = (m) => !m.peran || m.peran.includes(pengguna.peran);
+  const inisial = pengguna.nama.split(/\s+/).slice(0, 2).map((s) => s[0]).join('').toUpperCase();
 %>
 <nav class="sidebar" id="menu-utama" :class="{ terbuka: menu }" aria-label="Menu utama">
   <div class="merek">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
-    CRM
+    <span class="logo-merek"><%- include('ikon', { nama: 'merek', ukuran: 18 }) %></span>
+    <span>CRM</span>
+    <button type="button" class="tombol-ikon tutup-menu" @click="menu = false" aria-label="Tutup menu"><%- include('ikon', { nama: 'tutup', ukuran: 20 }) %></button>
   </div>
-  <ul>
-    <% menu.filter(m => !m[3].length || m[3].includes(pengguna.peran)).forEach(([j, label, ikon]) => { %>
-      <li><a href="<%= j %>" class="<%= aktif(j) ? 'aktif' : '' %>" <%- aktif(j) ? 'aria-current="page"' : '' %>>
-        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="<%= ikon %>"/></svg>
-        <%= label %>
-      </a></li>
+
+  <ul class="daftar-menu">
+    <% MENU.filter(boleh).forEach((m) => { %>
+      <% if (!m.anak) { const aktif = cocok(m.url); %>
+        <li>
+          <a href="<%= m.url %>" class="item-menu <%= aktif ? 'aktif' : '' %>" <%- aktif ? 'aria-current="page"' : '' %>>
+            <%- include('ikon', { nama: m.ikon }) %><span class="label-menu"><%= m.label %></span>
+          </a>
+        </li>
+      <% } else { const adaAktif = m.anak.some((a) => a.aktif); %>
+        <li class="grup-menu <%= adaAktif ? 'berisi-aktif' : '' %>" x-data="grupMenu('<%= m.id %>', <%= adaAktif %>)">
+          <button type="button" class="item-menu kepala-grup" @click="ubah()" :aria-expanded="buka.toString()"
+            aria-expanded="<%= adaAktif %>" aria-controls="sub-<%= m.id %>">
+            <%- include('ikon', { nama: m.ikon }) %>
+            <span class="label-menu"><%= m.label %></span>
+            <% if (m.lencana) { %><span class="lencana-menu bahaya" x-show="!buka" title="<%= m.lencana %> tugas terlambat"><%= m.lencana %></span><% } %>
+            <span class="panah-grup" aria-hidden="true"><%- include('ikon', { nama: 'chevron', ukuran: 16 }) %></span>
+          </button>
+          <div class="wadah-sub <%= adaAktif ? 'terbuka' : '' %>" :class="{ terbuka: buka }" id="sub-<%= m.id %>">
+            <ul class="sub-menu" :inert="!buka">
+              <% m.anak.forEach((a) => { %>
+                <li>
+                  <a href="<%= a.url %>" class="item-sub <%= a.aktif ? 'aktif' : '' %>" <%- a.aktif ? 'aria-current="page"' : '' %>>
+                    <% if (a.ikon) { %><%- include('ikon', { nama: a.ikon, ukuran: 16 }) %><% } else { %><span class="titik-sub" aria-hidden="true"></span><% } %>
+                    <span class="label-menu"><%= a.label %></span>
+                    <% if (a.lencana) { %><span class="lencana-menu <%= a.bahaya ? 'bahaya' : '' %>"><%= a.lencana %></span><% } %>
+                  </a>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        </li>
+      <% } %>
     <% }) %>
   </ul>
+
   <div class="profil">
-    <div><strong><%= pengguna.nama %></strong><br><small class="redup"><%= pengguna.peran %></small></div>
+    <span class="avatar" aria-hidden="true"><%= inisial %></span>
+    <div class="info-profil">
+      <strong><%= pengguna.nama %></strong>
+      <small><%= pengguna.peran %></small>
+    </div>
     <form method="post" action="/logout">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button class="tombol tombol-kecil" type="submit">Keluar</button>
+      <button class="tombol-ikon tombol-keluar" type="submit" aria-label="Keluar dari akun" title="Keluar"><%- include('ikon', { nama: 'keluar' }) %></button>
     </form>
   </div>
 </nav>
