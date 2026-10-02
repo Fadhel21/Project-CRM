@@ -13,7 +13,7 @@ async function resetDb() {
   await migrasi({ diam: true });
   const { rows } = await pool.query(
     `SELECT tablename FROM pg_tables WHERE schemaname = 'public'
-     AND tablename NOT IN ('skema_migrasi', 'pengaturan', 'tahap_pipeline')`);
+     AND tablename NOT IN ('skema_migrasi', 'pengaturan', 'tahap_pipeline', 'sumber_lead')`);
   if (rows.length) {
     await pool.query(`TRUNCATE ${rows.map((r) => `"${r.tablename}"`).join(', ')} RESTART IDENTITY CASCADE`);
   }

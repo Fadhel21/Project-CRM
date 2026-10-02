@@ -8,6 +8,8 @@ const perusahaan = require('./controllers/perusahaan');
 const kontak = require('./controllers/kontak');
 const perusahaanService = require('./services/perusahaan');
 const kontakService = require('./services/kontak');
+const lead = require('./controllers/lead');
+const leadService = require('./services/lead');
 
 const r = express.Router();
 const admin = butuhPeran('admin');
@@ -48,5 +50,17 @@ r.get('/kontak/:id(\\d+)', aksesKontak, kontak.detail);
 r.get('/kontak/:id(\\d+)/ubah', aksesKontak, kontak.formUbah);
 r.post('/kontak/:id(\\d+)', aksesKontak, kontak.simpan);
 r.post('/kontak/:id(\\d+)/hapus', aksesKontak, kontak.hapus);
+
+// Leads
+const aksesLead = pastikanAkses(leadService.ambil);
+r.get('/leads', lead.daftar);
+r.get('/leads/baru', lead.formBaru);
+r.post('/leads', lead.simpan);
+r.get('/leads/:id(\\d+)', aksesLead, lead.detail);
+r.get('/leads/:id(\\d+)/ubah', aksesLead, lead.formUbah);
+r.post('/leads/:id(\\d+)', aksesLead, lead.simpan);
+r.post('/leads/:id(\\d+)/hapus', aksesLead, lead.hapus);
+r.get('/leads/:id(\\d+)/konversi', aksesLead, lead.formKonversi);
+r.post('/leads/:id(\\d+)/konversi', aksesLead, lead.konversi);
 
 module.exports = r;

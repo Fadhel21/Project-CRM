@@ -1,0 +1,55 @@
+<%- include('../../partials/atas') %>
+<form class="kartu form-sempit" method="post" action="/leads/<%= lead.id %>/konversi"
+  x-data="{ pMode: '<%= input.perusahaan_mode %>', kMode: '<%= input.kontak_mode %>', deal: <%= input.buat_deal === 'ya' %> }">
+  <%- include('../../partials/galat-form') %>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <p class="redup">Semua langkah di bawah disimpan sekaligus. Bila satu gagal, tidak ada yang tersimpan.
+    Hasil konversi dimiliki oleh <strong><%= lead.pemilik %></strong>. Lead tidak dihapus.</p>
+
+  <h2>1. Perusahaan</h2>
+  <div class="baris pilihan-mode">
+    <label class="centang"><input type="radio" name="perusahaan_mode" value="baru" x-model="pMode"> Buat baru</label>
+    <label class="centang"><input type="radio" name="perusahaan_mode" value="ada" x-model="pMode"> Pilih yang sudah ada</label>
+    <label class="centang"><input type="radio" name="perusahaan_mode" value="tidak" x-model="pMode"> Tanpa perusahaan</label>
+  </div>
+  <label x-show="pMode === 'baru'">Nama perusahaan baru <input name="perusahaan_nama" value="<%= input.perusahaan_nama || '' %>"></label>
+  <label x-show="pMode === 'ada'">Perusahaan
+    <select name="perusahaan_id"><option value="">- Pilih -</option>
+      <% perusahaan.forEach(p => { %><option value="<%= p.id %>" <%= String(input.perusahaan_id) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+    </select>
+  </label>
+
+  <h2>2. Kontak</h2>
+  <% if (duplikat.length) { %>
+    <div class="notif notif-peringatan">
+      <strong>Kemungkinan data ganda:</strong>
+      <ul class="tanpa-bullet"><% duplikat.forEach(d => { %><li><%= d.jenis %>: <strong><%= d.nama %></strong> (pemilik: <%= d.pemilik %>)</li><% }) %></ul>
+      Pertimbangkan memilih kontak yang sudah ada.
+    </div>
+  <% } %>
+  <div class="baris pilihan-mode">
+    <label class="centang"><input type="radio" name="kontak_mode" value="baru" x-model="kMode"> Buat kontak baru dari lead</label>
+    <label class="centang"><input type="radio" name="kontak_mode" value="ada" x-model="kMode"> Pilih kontak yang sudah ada</label>
+  </div>
+  <label x-show="kMode === 'ada'">Kontak
+    <select name="kontak_id"><option value="">- Pilih -</option>
+      <% kontak.forEach(k => { %><option value="<%= k.id %>" <%= String(input.kontak_id) === String(k.id) ? 'selected' : '' %>><%= k.nama %></option><% }) %>
+    </select>
+  </label>
+
+  <h2>3. Deal</h2>
+  <label class="centang"><input type="checkbox" name="buat_deal" value="ya" x-model="deal"> Buat deal</label>
+  <div x-show="deal">
+    <label>Judul deal <input name="deal_judul" value="<%= input.deal_judul || '' %>"></label>
+    <div class="grid">
+      <label>Nilai (Rp) <input name="deal_nilai" inputmode="decimal" value="<%= input.deal_nilai || '0' %>" placeholder="contoh: 15000000 atau 15.000.000,50"></label>
+      <label>Target tutup <input type="date" name="deal_target_tutup" value="<%= input.deal_target_tutup || '' %>"></label>
+    </div>
+  </div>
+
+  <div class="baris jarak-atas">
+    <button class="tombol tombol-utama">Konversi sekarang</button>
+    <a class="tombol" href="/leads/<%= lead.id %>">Batal</a>
+  </div>
+</form>
+<%- include('../../partials/bawah') %>

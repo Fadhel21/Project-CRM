@@ -3,6 +3,7 @@ const { query, transaksi } = require('../../../config/db');
 const { filterPemilik } = require('./akses');
 const audit = require('./audit');
 const perusahaanService = require('./perusahaan');
+const duplikatService = require('./duplikat');
 const { GalatValidasi, teks, teksAtauNull, emailValid, normalTelepon, idAtauNull } = require('./validasi');
 const { UKURAN_HALAMAN, galat404, nomorHalaman, tentukanPemilik, polaCari } = require('./umum');
 
@@ -44,24 +45,6 @@ async function ambil(id, pengguna, klien) {
   return rows[0] || null;
 }
 
-/**
- * Mencari kontak lain dengan email/telepon sama, di SEMUA pemilik.
- * Hanya nama dan pemilik yang dikembalikan, tidak ada detail data pribadi lain.
- */
-async function cariDuplikat({ email, telepon, kecualiKontakId = null }, klien) {
-  const em = teksAtauNull(email)?.toLowerCase() ?? null;
-  const tel = normalTelepon(telepon);
-  if (!em && !tel) return [];
-  const { rows } = await query(
-    `SELECT 'kontak' AS jenis, k.id, k.nama, u.nama AS pemilik,
-       (lower(k.email) = $1) AS email_sama, (k.telepon_normal = $2) AS telepon_sama
-     FROM kontak k JOIN pengguna u ON u.id = k.pemilik_id
-     WHERE k.deleted_at IS NULL AND k.id <> COALESCE($3::bigint, 0)
-       AND (lower(k.email) = $1 OR k.telepon_normal = $2)
-     LIMIT 20`, [em, tel, kecualiKontakId], klien);
-  return rows;
-}
-
 function validasi(input) {
   const data = {
     nama: teks(input.nama),
@@ -97,8 +80,8 @@ async function simpan(id, input, pengguna, klienLuar) {
     }
     const emailBerubah = !lama || data.email !== lama.email || normalTelepon(data.telepon) !== lama.telepon_normal;
     if (emailBerubah && input.abaikan_duplikat !== 'ya') {
-      const duplikat = await cariDuplikat({ email: data.email, telepon: data.telepon, kecualiKontakId: id }, k);
-      if (duplikat.length) throw Object.assign(new Error('Ditemukan data dengan email/telepon sama.'), { status: 409, duplikat });
+      const duplikat = await duplikatService.cari({ email: data.email, telepon: data.telepon, kecualiKontakId: id }, k);
+      if (duplikat.length) throw duplikatService.galatDuplikat(duplikat);
     }
     data.pemilik_id = await tentukanPemilik(k, pengguna, input.pemilik_id, lama && String(lama.pemilik_id));
     const nilai = [data.nama, data.jabatan, data.email, data.telepon, normalTelepon(data.telepon),
@@ -137,4 +120,4 @@ async function pilihan(pengguna) {
   return rows;
 }
 
-module.exports = { daftar, ambil, cariDuplikat, simpan, hapus, pilihan };
+module.exports = { daftar, ambil, simpan, hapus, pilihan };

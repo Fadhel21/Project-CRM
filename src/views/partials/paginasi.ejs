@@ -1,10 +1,11 @@
-<%# Parameter: hasil (halaman, jumlahHalaman, total), dasar (URL tanpa query), q %>
+<%# Parameter: hasil (halaman, jumlahHalaman, total), dasar (URL tanpa query), q, ekstra (query tambahan, opsional) %>
 <% if (hasil.jumlahHalaman > 1) { %>
 <nav class="baris antara paginasi" aria-label="Halaman">
   <span class="redup"><%= hasil.total %> data · halaman <%= hasil.halaman %> dari <%= hasil.jumlahHalaman %></span>
   <span class="baris">
     <% [['‹ Sebelumnya', hasil.halaman - 1], ['Berikutnya ›', hasil.halaman + 1]].forEach(([label, h]) => { %>
-      <% if (h >= 1 && h <= hasil.jumlahHalaman) { const url = `${dasar}?q=${encodeURIComponent(q || '')}&halaman=${h}`; %>
+      <% if (h >= 1 && h <= hasil.jumlahHalaman) {
+           const url = `${dasar}?q=${encodeURIComponent(q || '')}${typeof ekstra !== 'undefined' ? ekstra : ''}&halaman=${h}`; %>
         <a class="tombol tombol-kecil" href="<%= url %>" hx-get="<%= url %>" hx-target="#hasil" hx-push-url="true"><%= label %></a>
       <% } %>
     <% }) %>

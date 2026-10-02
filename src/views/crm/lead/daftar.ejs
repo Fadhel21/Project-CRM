@@ -1,0 +1,22 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <form id="filter-lead" class="baris" hx-get="/leads" hx-target="#hasil" hx-push-url="true"
+      hx-trigger="input changed delay:300ms from:input, change from:select, submit">
+      <input type="search" name="q" value="<%= filter.q %>" placeholder="Cari nama, perusahaan, email, telepon…" class="lebar-cari">
+      <select name="status" class="lebar-pendek">
+        <option value="">Semua (belum dikonversi)</option>
+        <% Object.entries(STATUS).forEach(([k, v]) => { %><option value="<%= k %>" <%= filter.status === k ? 'selected' : '' %>><%= v %></option><% }) %>
+        <option value="dikonversi" <%= filter.status === 'dikonversi' ? 'selected' : '' %>>Sudah dikonversi</option>
+      </select>
+      <select name="sumber" class="lebar-pendek">
+        <option value="">Semua sumber</option>
+        <% sumber.forEach(s => { %><option value="<%= s.id %>" <%= String(filter.sumber) === String(s.id) ? 'selected' : '' %>><%= s.nama %></option><% }) %>
+      </select>
+    </form>
+    <a class="tombol tombol-utama" href="/leads/baru">+ Lead baru</a>
+  </div>
+  <div id="hasil"><%- include('tabel') %></div>
+</section>
+<%- include('../../partials/bawah') %>

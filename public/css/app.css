@@ -65,6 +65,11 @@ td.angka, th.angka { text-align: right; font-variant-numeric: tabular-nums; }
 label.centang { flex-direction: row; align-items: center; gap: .5rem; }
 label.centang input { width: auto; }
 .lebar-cari { max-width: 360px; }
+.lebar-pendek { max-width: 220px; }
+.pilihan-mode { gap: 1rem; }
+.pilihan-mode label { margin-bottom: .4rem; }
+form h2 { margin-top: 1.25rem; }
+[x-cloak] { display: none !important; }
 .paginasi { margin-top: .75rem; }
 dl.info { display: grid; grid-template-columns: 140px 1fr; gap: .4rem 1rem; margin: 1rem 0 0; }
 dl.info dt { color: var(--redup); }

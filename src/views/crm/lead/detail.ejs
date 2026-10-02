@@ -1,0 +1,34 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<% if (data.konversi_at) { %>
+  <div class="notif notif-sukses">
+    Dikonversi oleh <strong><%= data.dikonversi_oleh %></strong> pada <%= f.tanggalJam(data.konversi_at) %> →
+    <% if (data.kontak_id) { %><a href="/kontak/<%= data.kontak_id %>">kontak</a><% } %>
+    <% if (data.perusahaan_id) { %> · <a href="/perusahaan/<%= data.perusahaan_id %>">perusahaan</a><% } %>
+    <% if (data.deal_id) { %> · <a href="/deal/<%= data.deal_id %>">deal</a><% } %>
+  </div>
+<% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <h2><%= data.nama %> <span class="lencana"><%= data.konversi_at ? 'Dikonversi' : STATUS[data.status] %></span></h2>
+    <% if (!data.konversi_at) { %>
+      <div class="baris">
+        <% if (data.status !== 'tidak_layak') { %><a class="tombol tombol-utama" href="/leads/<%= data.id %>/konversi">Konversi</a><% } %>
+        <a class="tombol" href="/leads/<%= data.id %>/ubah">Ubah</a>
+        <%- include('../../partials/tombol-hapus', { aksi: `/leads/${data.id}/hapus`, label: 'lead ini' }) %>
+      </div>
+    <% } %>
+  </div>
+  <dl class="info">
+    <dt>Perusahaan</dt><dd><%= data.nama_perusahaan || '-' %></dd>
+    <dt>Jabatan</dt><dd><%= data.jabatan || '-' %></dd>
+    <dt>Email</dt><dd><%= data.email || '-' %></dd>
+    <dt>Telepon</dt><dd><%= data.telepon || '-' %></dd>
+    <dt>Sumber</dt><dd><%= data.sumber || '-' %></dd>
+    <dt>Catatan</dt><dd class="pra"><%= data.catatan || '-' %></dd>
+    <dt>Pemilik</dt><dd><%= data.pemilik %></dd>
+    <dt>Masuk</dt><dd><%= f.tanggalJam(data.created_at) %></dd>
+  </dl>
+</section>
+<%- include('../../partials/riwayat') %>
+<%- include('../../partials/bawah') %>

@@ -1,0 +1,19 @@
+<div class="tabel-gulir"><table>
+  <thead><tr><th>Nama</th><th>Perusahaan</th><th>Kontak</th><th>Sumber</th><th>Status</th><th>Pemilik</th><th>Masuk</th></tr></thead>
+  <tbody>
+  <% hasil.baris.forEach(l => { %>
+    <tr>
+      <td><a href="/leads/<%= l.id %>"><%= l.nama %></a></td>
+      <td><%= l.nama_perusahaan || '-' %></td>
+      <td><%= l.email || '' %><% if (l.email && l.telepon) { %><br><% } %><%= l.telepon || '' %></td>
+      <td><%= l.sumber || '-' %></td>
+      <td><span class="lencana"><%= l.konversi_at ? 'Dikonversi' : STATUS[l.status] %></span></td>
+      <td><%= l.pemilik %></td>
+      <td><%= f.tanggal(l.created_at) %></td>
+    </tr>
+  <% }) %>
+  <% if (!hasil.baris.length) { %><tr><td colspan="7" class="redup">Tidak ada data.</td></tr><% } %>
+  </tbody>
+</table></div>
+<%- include('../../partials/paginasi', { dasar: '/leads',
+  ekstra: `&status=${encodeURIComponent(filter.status)}&sumber=${encodeURIComponent(filter.sumber)}` }) %>
