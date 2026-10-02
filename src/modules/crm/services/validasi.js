@@ -30,10 +30,26 @@ function normalTelepon(v) {
   return t || null;
 }
 
-/** Validasi string uang (maks 2 desimal, 13 digit bulat). Mengembalikan string, bukan float. */
+/**
+ * Validasi string uang (maks 2 desimal, 13 digit bulat). Mengembalikan string, bukan float.
+ * Format yang diterima:
+ *   "1.234.567,89" / "1234567,89"  -> koma = desimal, titik = pemisah ribuan
+ *   "1.500.000"                    -> titik berpola ribuan = pemisah ribuan
+ *   "2500000.5" / "2500000.50"     -> satu titik diikuti 1-2 angka = desimal
+ * Format lain (mis. "1,234", "1.2.3") ditolak, bukan ditebak.
+ */
 function uang(v) {
-  const t = teks(v).replace(/\./g, '').replace(',', '.');
+  let t = teks(v).replace(/^rp\.?\s*/i, '').replace(/\s/g, '');
   if (t === '') return '0';
+  if (t.includes(',')) {
+    if (!/^(\d{1,3}(\.\d{3})+|\d+),\d{1,2}$/.test(t)) return null;
+    t = t.replace(/\./g, '').replace(',', '.');
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(t)) {
+    t = t.replace(/\./g, '');
+  } else if (!/^\d+(\.\d{1,2})?$/.test(t)) {
+    return null;
+  }
+  t = t.replace(/^0+(?=\d)/, '');
   if (!/^\d{1,13}(\.\d{1,2})?$/.test(t)) return null;
   return t;
 }

@@ -5,6 +5,8 @@ const env = require('./env');
 // NUMERIC (1700) dan BIGINT (20) dibiarkan string agar tidak kehilangan presisi
 types.setTypeParser(1700, (v) => v);
 types.setTypeParser(20, (v) => v);
+// DATE (1082) dibiarkan string 'YYYY-MM-DD' agar tidak bergeser karena zona waktu
+types.setTypeParser(1082, (v) => v);
 
 const pool = new Pool({ connectionString: env.databaseUrl, max: 10 });
 

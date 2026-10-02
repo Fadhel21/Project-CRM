@@ -1,0 +1,43 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <h2><%= data.judul %> <span class="lencana lencana-<%= data.jenis_tahap %>"><%= data.tahap %></span></h2>
+    <div class="baris">
+      <a class="tombol" href="/deal/<%= data.id %>/ubah">Ubah</a>
+      <%- include('../../partials/tombol-hapus', { aksi: `/deal/${data.id}/hapus`, label: 'deal ini' }) %>
+    </div>
+  </div>
+  <dl class="info">
+    <dt>Nilai</dt><dd><strong><%= f.rupiah(data.nilai) %></strong></dd>
+    <dt>Perusahaan</dt><dd><% if (data.perusahaan) { %><a href="/perusahaan/<%= data.perusahaan_id %>"><%= data.perusahaan %></a><% } else { %>-<% } %></dd>
+    <dt>Kontak</dt><dd><% if (data.kontak) { %><a href="/kontak/<%= data.kontak_id %>"><%= data.kontak %></a><% } else { %>-<% } %></dd>
+    <dt>Target tutup</dt><dd><%= f.tanggal(data.target_tutup) %></dd>
+    <% if (data.ditutup_at) { %><dt>Ditutup</dt><dd><%= f.tanggalJam(data.ditutup_at) %></dd><% } %>
+    <% if (data.alasan_kalah) { %><dt>Alasan kalah</dt><dd class="pra"><%= data.alasan_kalah %></dd><% } %>
+    <% if (data.lead_id) { %><dt>Dari lead</dt><dd><a href="/leads/<%= data.lead_id %>">lihat lead</a></dd><% } %>
+    <dt>Catatan</dt><dd class="pra"><%= data.catatan || '-' %></dd>
+    <dt>Pemilik</dt><dd><%= data.pemilik %></dd>
+  </dl>
+</section>
+
+<section class="kartu">
+  <h2>Pindah tahap</h2>
+  <form class="baris" method="post" action="/deal/<%= data.id %>/tahap" x-data="{ tahap: '<%= data.tahap_id %>', kalah: <%= JSON.stringify(tahap.filter(t => t.jenis === 'kalah').map(t => String(t.id))) %> }">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <select name="tahap_id" class="lebar-pendek" x-model="tahap">
+      <% tahap.forEach(t => { %><option value="<%= t.id %>" <%= String(t.id) === String(data.tahap_id) ? 'selected' : '' %>><%= t.nama %></option><% }) %>
+    </select>
+    <input name="alasan_kalah" placeholder="Alasan kalah (wajib)" class="lebar-cari" x-show="kalah.includes(tahap)" x-cloak>
+    <button class="tombol tombol-utama">Pindahkan</button>
+  </form>
+  <h2 class="jarak-atas">Riwayat tahap</h2>
+  <ul class="daftar-riwayat">
+    <% riwayatTahap.forEach(r => { %>
+      <li><strong><%= r.pengguna || 'Sistem' %></strong>: <%= r.dari ? `${r.dari} → ${r.ke}` : `dibuat di ${r.ke}` %>
+        <br><small class="redup"><%= f.tanggalJam(r.created_at) %></small></li>
+    <% }) %>
+  </ul>
+</section>
+<%- include('../../partials/riwayat') %>
+<%- include('../../partials/bawah') %>

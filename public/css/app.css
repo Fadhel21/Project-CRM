@@ -70,6 +70,23 @@ label.centang input { width: auto; }
 .pilihan-mode label { margin-bottom: .4rem; }
 form h2 { margin-top: 1.25rem; }
 [x-cloak] { display: none !important; }
+.jarak-bawah { margin-bottom: .75rem; }
+.lencana-menang { background: #ecfdf3; color: var(--sukses); }
+.lencana-kalah { background: #fef3f2; color: var(--galat); }
+tfoot th { color: var(--teks); font-size: .9rem; text-transform: none; letter-spacing: 0; }
+
+/* Kanban */
+.papan-kanban { display: flex; gap: .75rem; overflow-x: auto; padding-bottom: .5rem; align-items: flex-start; }
+.kolom-kanban { flex: 0 0 250px; background: #eceff3; border-radius: var(--radius); padding: .6rem; min-height: 200px; border: 2px dashed transparent; }
+.kolom-kanban header { padding: .2rem .25rem .6rem; }
+.kolom-kanban.sasaran { border-color: var(--utama); background: #e6ecfb; }
+.kolom-menang { background: #e9f7ef; }
+.kolom-kalah { background: #fbeeed; }
+.isi-kolom { display: flex; flex-direction: column; gap: .5rem; min-height: 120px; }
+.kartu-deal { background: var(--permukaan); border: 1px solid var(--garis); border-radius: 6px; padding: .6rem .7rem; cursor: grab; box-shadow: var(--bayang); }
+.kartu-deal.diseret { opacity: .45; }
+.kartu-deal .nilai { font-weight: 600; margin: .2rem 0; font-variant-numeric: tabular-nums; }
+.htmx-request .papan-kanban, .papan-kanban.htmx-request { opacity: .6; }
 .paginasi { margin-top: .75rem; }
 dl.info { display: grid; grid-template-columns: 140px 1fr; gap: .4rem 1rem; margin: 1rem 0 0; }
 dl.info dt { color: var(--redup); }

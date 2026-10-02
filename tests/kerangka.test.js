@@ -15,6 +15,18 @@ test('rupiah memformat NUMERIC tanpa float', () => {
   assert.equal(rupiah('9999999999999.99'), 'Rp 9.999.999.999.999,99');
 });
 
+test('uang: format Indonesia & desimal titik diterima, format ambigu ditolak', () => {
+  const { uang } = require('../src/modules/crm/services/validasi');
+  const benar = {
+    '1.234.567,89': '1234567.89', '1234567,8': '1234567.8', '1.500.000': '1500000', '2500000.5': '2500000.5',
+    '2500000.50': '2500000.50', 'Rp 15.000': '15000', '0,10': '0.10', '': '0', '007': '7', '1.999': '1999',
+  };
+  for (const [masuk, keluar] of Object.entries(benar)) assert.equal(uang(masuk), keluar, masuk);
+  for (const salah of ['-1', '1,234', '1.2.3', '12.345.67', '1,5,5', 'satu', '10000000000000', '1.000,123']) {
+    assert.equal(uang(salah), null, salah);
+  }
+});
+
 test('filterPemilik: admin semua, manajer timnya, sales miliknya', () => {
   let p = [];
   assert.equal(filterPemilik({ id: 1, peran: 'admin' }, 'x.pemilik_id', p), 'TRUE');

@@ -17,5 +17,6 @@
     <dt>Pemilik</dt><dd><%= data.pemilik %></dd>
   </dl>
 </section>
+<%- include('../../partials/daftar-deal', { urlBaru: `/deal/baru?kontak_id=${data.id}&perusahaan_id=${data.perusahaan_id || ""}` }) %>
 <%- include('../../partials/riwayat') %>
 <%- include('../../partials/bawah') %>

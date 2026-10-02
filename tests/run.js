@@ -7,7 +7,7 @@ const { spec } = require('node:test/reporters');
 process.env.NODE_ENV = 'test';
 const berkas = fs.readdirSync(__dirname).filter((f) => f.endsWith('.test.js')).map((f) => path.join(__dirname, f));
 
-run({ files: berkas, concurrency: 1, env: { ...process.env, NODE_ENV: 'test' } })
+run({ files: berkas, concurrency: 1, timeout: 30000, env: { ...process.env, NODE_ENV: 'test' } })
   .on('test:fail', () => { process.exitCode = 1; })
   .compose(spec)
   .pipe(process.stdout);

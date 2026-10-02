@@ -1,0 +1,18 @@
+<%- include('../../partials/atas') %>
+<div class="baris antara jarak-bawah">
+  <% if (pengguna.peran !== 'sales') { %>
+    <form class="baris" hx-get="/pipeline" hx-target="#kanban" hx-trigger="change" hx-push-url="true">
+      <select name="pemilik" class="lebar-pendek">
+        <option value="">Semua pemilik</option>
+        <% pemilik.forEach(p => { %><option value="<%= p.id %>" <%= String(pemilikId) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+      </select>
+    </form>
+  <% } else { %><span></span><% } %>
+  <div class="baris">
+    <a class="tombol" href="/deal">Tampilan daftar</a>
+    <a class="tombol tombol-utama" href="/deal/baru">+ Deal baru</a>
+  </div>
+</div>
+<p class="redup">Seret kartu ke kolom lain untuk memindahkan tahap. Kolom Menang/Kalah hanya menampilkan deal yang ditutup 30 hari terakhir.</p>
+<div id="kanban" data-pemilik="<%= pemilikId %>"><%- include('papan') %></div>
+<%- include('../../partials/bawah') %>

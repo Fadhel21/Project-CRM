@@ -1,0 +1,31 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <form class="baris" hx-get="/deal" hx-target="#hasil" hx-push-url="true"
+      hx-trigger="input changed delay:300ms from:input, change from:select, submit">
+      <input type="search" name="q" value="<%= filter.q %>" placeholder="Cari judul, kontak, perusahaan…" class="lebar-cari">
+      <select name="status" class="lebar-pendek">
+        <% [['terbuka', 'Terbuka'], ['menang', 'Menang'], ['kalah', 'Kalah'], ['semua', 'Semua status']].forEach(([k, v]) => { %>
+          <option value="<%= k %>" <%= filter.status === k ? 'selected' : '' %>><%= v %></option>
+        <% }) %>
+      </select>
+      <select name="tahap" class="lebar-pendek">
+        <option value="">Semua tahap</option>
+        <% tahap.forEach(t => { %><option value="<%= t.id %>" <%= String(filter.tahap) === String(t.id) ? 'selected' : '' %>><%= t.nama %></option><% }) %>
+      </select>
+      <% if (pengguna.peran !== 'sales') { %>
+        <select name="pemilik" class="lebar-pendek">
+          <option value="">Semua pemilik</option>
+          <% pemilik.forEach(p => { %><option value="<%= p.id %>" <%= String(filter.pemilikId) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+        </select>
+      <% } %>
+    </form>
+    <div class="baris">
+      <a class="tombol" href="/pipeline">Kanban</a>
+      <a class="tombol tombol-utama" href="/deal/baru">+ Deal baru</a>
+    </div>
+  </div>
+  <div id="hasil"><%- include('tabel') %></div>
+</section>
+<%- include('../../partials/bawah') %>

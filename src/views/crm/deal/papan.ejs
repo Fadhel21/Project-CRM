@@ -1,0 +1,20 @@
+<div class="papan-kanban">
+  <% kolom.forEach(t => { %>
+    <section class="kolom-kanban kolom-<%= t.jenis %>" data-tahap-id="<%= t.id %>" data-jenis="<%= t.jenis %>" aria-label="Tahap <%= t.nama %>">
+      <header>
+        <div class="baris antara"><strong><%= t.nama %></strong><span class="lencana"><%= t.jumlah %></span></div>
+        <small class="redup"><%= f.rupiah(t.nilai) %></small>
+      </header>
+      <div class="isi-kolom">
+        <% t.deal.forEach(d => { %>
+          <article class="kartu-deal" draggable="true" data-deal-id="<%= d.id %>">
+            <a href="/deal/<%= d.id %>"><%= d.judul %></a>
+            <div class="nilai"><%= f.rupiah(d.nilai) %></div>
+            <small class="redup"><%= d.perusahaan || d.kontak || '-' %> · <%= d.pemilik %></small>
+            <% if (d.target_tutup) { %><br><small class="redup">Target: <%= f.tanggal(d.target_tutup) %></small><% } %>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+  <% }) %>
+</div>

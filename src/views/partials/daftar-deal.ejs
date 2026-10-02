@@ -1,0 +1,15 @@
+<%# Daftar deal terkait. Parameter: deal, urlBaru %>
+<section class="kartu">
+  <div class="baris antara"><h2>Deal</h2><a class="tombol" href="<%= urlBaru %>">+ Deal</a></div>
+  <table>
+    <thead><tr><th>Judul</th><th>Tahap</th><th class="angka">Nilai</th></tr></thead>
+    <tbody>
+    <% deal.forEach(d => { %>
+      <tr><td><a href="/deal/<%= d.id %>"><%= d.judul %></a></td>
+        <td><span class="lencana lencana-<%= d.jenis_tahap %>"><%= d.tahap %></span></td>
+        <td class="angka"><%= f.rupiah(d.nilai) %></td></tr>
+    <% }) %>
+    <% if (!deal.length) { %><tr><td colspan="3" class="redup">Belum ada deal yang bisa Anda lihat.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>

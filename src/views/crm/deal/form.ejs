@@ -1,0 +1,36 @@
+<%- include('../../partials/atas') %>
+<form class="kartu form-sempit" method="post" action="<%= data.id ? '/deal/' + data.id : '/deal' %>">
+  <%- include('../../partials/galat-form') %>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Judul deal <input name="judul" value="<%= data.judul || '' %>" required></label>
+  <div class="grid">
+    <label>Nilai (Rp) <input name="nilai" inputmode="decimal" value="<%= data.nilai || '0' %>" placeholder="15000000 atau 15.000.000,50"></label>
+    <label>Target tutup <input type="date" name="target_tutup" value="<%= data.target_tutup || '' %>"></label>
+  </div>
+  <% if (!data.id) { %>
+    <label>Tahap awal
+      <select name="tahap_id">
+        <% tahap.forEach(t => { %><option value="<%= t.id %>" <%= String(data.tahap_id) === String(t.id) ? 'selected' : '' %>><%= t.nama %></option><% }) %>
+      </select>
+    </label>
+  <% } %>
+  <div class="grid">
+    <label>Perusahaan
+      <select name="perusahaan_id"><option value="">- Tanpa -</option>
+        <% perusahaan.forEach(p => { %><option value="<%= p.id %>" <%= String(data.perusahaan_id) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+      </select>
+    </label>
+    <label>Kontak
+      <select name="kontak_id"><option value="">- Tanpa -</option>
+        <% kontak.forEach(k => { %><option value="<%= k.id %>" <%= String(data.kontak_id) === String(k.id) ? 'selected' : '' %>><%= k.nama %></option><% }) %>
+      </select>
+    </label>
+  </div>
+  <label>Catatan <textarea name="catatan" rows="3"><%= data.catatan || '' %></textarea></label>
+  <%- include('../../partials/pilih-pemilik') %>
+  <div class="baris">
+    <button class="tombol tombol-utama">Simpan</button>
+    <a class="tombol" href="<%= data.id ? '/deal/' + data.id : '/deal' %>">Batal</a>
+  </div>
+</form>
+<%- include('../../partials/bawah') %>

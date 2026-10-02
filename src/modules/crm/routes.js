@@ -10,6 +10,8 @@ const perusahaanService = require('./services/perusahaan');
 const kontakService = require('./services/kontak');
 const lead = require('./controllers/lead');
 const leadService = require('./services/lead');
+const deal = require('./controllers/deal');
+const dealService = require('./services/deal');
 
 const r = express.Router();
 const admin = butuhPeran('admin');
@@ -62,5 +64,17 @@ r.post('/leads/:id(\\d+)', aksesLead, lead.simpan);
 r.post('/leads/:id(\\d+)/hapus', aksesLead, lead.hapus);
 r.get('/leads/:id(\\d+)/konversi', aksesLead, lead.formKonversi);
 r.post('/leads/:id(\\d+)/konversi', aksesLead, lead.konversi);
+
+// Deal & pipeline
+const aksesDeal = pastikanAkses(dealService.ambil);
+r.get('/pipeline', deal.kanban);
+r.get('/deal', deal.daftar);
+r.get('/deal/baru', deal.formBaru);
+r.post('/deal', deal.simpan);
+r.get('/deal/:id(\\d+)', aksesDeal, deal.detail);
+r.get('/deal/:id(\\d+)/ubah', aksesDeal, deal.formUbah);
+r.post('/deal/:id(\\d+)', aksesDeal, deal.simpan);
+r.post('/deal/:id(\\d+)/tahap', aksesDeal, deal.pindahTahap);
+r.post('/deal/:id(\\d+)/hapus', aksesDeal, deal.hapus);
 
 module.exports = r;

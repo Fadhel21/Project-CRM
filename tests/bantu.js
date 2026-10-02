@@ -65,7 +65,7 @@ function klien(dasar) {
 
   return {
     get: (j, headers) => minta(j, { headers }),
-    post: (j, body) => minta(j, { method: 'POST', body }),
+    post: (j, body, headers) => minta(j, { method: 'POST', body, headers }),
     async masuk(email) {
       await minta('/login');
       const r = await minta('/login', { method: 'POST', body: { email, password: PASSWORD } });
