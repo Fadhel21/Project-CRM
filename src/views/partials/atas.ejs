@@ -1,11 +1,12 @@
 <%- include('kepala') %>
 <body hx-headers='{"X-CSRF-Token": "<%= csrfToken %>"}'>
-<div class="kerangka" x-data="{ menu: false }">
+<a class="lompat-isi" href="#isi-utama">Lompat ke isi</a>
+<div class="kerangka" x-data="{ menu: false }" @keydown.escape="menu = false">
   <%- include('sidebar') %>
-  <main class="isi">
+  <main class="isi" id="isi-utama" tabindex="-1">
     <header class="bilah-atas">
-      <button class="tombol-ikon menu-hp" type="button" @click="menu = !menu" aria-label="Buka menu">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <button class="tombol-ikon menu-hp" type="button" @click="menu = !menu" :aria-expanded="menu" aria-controls="menu-utama" aria-label="Buka menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
       </button>
       <h1><%= judul %></h1>
     </header>

@@ -58,7 +58,7 @@ test('halaman login tampil, beranda mengarah ke login, POST tanpa CSRF ditolak',
   try {
     const login = await fetch(`${dasar}/login`);
     assert.equal(login.status, 200);
-    assert.match(await login.text(), /Masuk ke CRM/);
+    assert.match(await login.text(), /Silakan masuk dengan akun CRM/);
 
     const beranda = await fetch(`${dasar}/`, { redirect: 'manual' });
     assert.equal(beranda.status, 302);
