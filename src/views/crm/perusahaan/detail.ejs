@@ -1,0 +1,34 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <h2><%= data.nama %></h2>
+    <div class="baris">
+      <a class="tombol" href="/perusahaan/<%= data.id %>/ubah">Ubah</a>
+      <%- include('../../partials/tombol-hapus', { aksi: `/perusahaan/${data.id}/hapus`, label: 'perusahaan ini' }) %>
+    </div>
+  </div>
+  <dl class="info">
+    <dt>Industri</dt><dd><%= data.industri || '-' %></dd>
+    <dt>Email</dt><dd><%= data.email || '-' %></dd>
+    <dt>Telepon</dt><dd><%= data.telepon || '-' %></dd>
+    <dt>Situs</dt><dd><%= data.situs || '-' %></dd>
+    <dt>Alamat</dt><dd class="pra"><%= data.alamat || '-' %></dd>
+    <dt>Pemilik</dt><dd><%= data.pemilik %></dd>
+  </dl>
+</section>
+<section class="kartu">
+  <div class="baris antara"><h2>Kontak</h2><a class="tombol" href="/kontak/baru?perusahaan_id=<%= data.id %>">+ Kontak</a></div>
+  <table>
+    <thead><tr><th>Nama</th><th>Jabatan</th><th>Email</th><th>Telepon</th></tr></thead>
+    <tbody>
+    <% kontak.baris.forEach(k => { %>
+      <tr><td><a href="/kontak/<%= k.id %>"><%= k.nama %></a></td><td><%= k.jabatan || '-' %></td>
+        <td><%= k.email || '-' %></td><td><%= k.telepon || '-' %></td></tr>
+    <% }) %>
+    <% if (!kontak.baris.length) { %><tr><td colspan="4" class="redup">Belum ada kontak yang bisa Anda lihat.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
+<%- include('../../partials/riwayat') %>
+<%- include('../../partials/bawah') %>

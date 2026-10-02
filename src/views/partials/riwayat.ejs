@@ -1,0 +1,17 @@
+<%# Riwayat perubahan dari audit_log %>
+<%
+  const labelAksi = { buat: 'membuat', ubah: 'mengubah', hapus: 'menghapus', konversi: 'mengonversi' };
+%>
+<section class="kartu">
+  <h2>Riwayat perubahan</h2>
+  <% if (!riwayat.length) { %><p class="redup">Belum ada riwayat.</p><% } %>
+  <ul class="daftar-riwayat">
+    <% riwayat.forEach(r => { %>
+      <li>
+        <strong><%= r.pengguna || 'Sistem' %></strong> <%= labelAksi[r.aksi] || r.aksi %>
+        <% if (r.kolom && r.kolom.length) { %><span class="redup">(<%= r.kolom.join(', ') %>)</span><% } %>
+        <br><small class="redup"><%= f.tanggalJam(r.created_at) %></small>
+      </li>
+    <% }) %>
+  </ul>
+</section>

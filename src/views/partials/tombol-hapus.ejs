@@ -1,0 +1,5 @@
+<%# Tombol hapus (soft delete) dengan konfirmasi. Parameter: aksi (URL), label %>
+<form method="post" action="<%= aksi %>" data-konfirmasi="Yakin ingin menghapus <%= label %>? Data disembunyikan, tidak dihapus permanen.">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <button class="tombol tombol-bahaya" type="submit">Hapus</button>
+</form>

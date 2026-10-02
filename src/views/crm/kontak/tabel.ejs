@@ -1,0 +1,14 @@
+<div class="tabel-gulir"><table>
+  <thead><tr><th>Nama</th><th>Perusahaan</th><th>Email</th><th>Telepon</th><th>Pemilik</th></tr></thead>
+  <tbody>
+  <% hasil.baris.forEach(k => { %>
+    <tr>
+      <td><a href="/kontak/<%= k.id %>"><%= k.nama %></a><% if (k.jabatan) { %><br><small class="redup"><%= k.jabatan %></small><% } %></td>
+      <td><%= k.perusahaan || '-' %></td><td><%= k.email || '-' %></td><td><%= k.telepon || '-' %></td>
+      <td><%= k.pemilik %></td>
+    </tr>
+  <% }) %>
+  <% if (!hasil.baris.length) { %><tr><td colspan="5" class="redup">Tidak ada data.</td></tr><% } %>
+  </tbody>
+</table></div>
+<%- include('../../partials/paginasi', { dasar: '/kontak' }) %>

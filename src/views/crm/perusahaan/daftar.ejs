@@ -1,0 +1,11 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <input type="search" name="q" value="<%= q %>" placeholder="Cari nama atau industri…" class="lebar-cari"
+      hx-get="/perusahaan" hx-trigger="input changed delay:300ms, search" hx-target="#hasil" hx-push-url="true">
+    <a class="tombol tombol-utama" href="/perusahaan/baru">+ Perusahaan baru</a>
+  </div>
+  <div id="hasil"><%- include('tabel') %></div>
+</section>
+<%- include('../../partials/bawah') %>

@@ -1,0 +1,13 @@
+<%# Peringatan duplikat email/telepon. Data TIDAK digabung otomatis; pengguna memilih tetap simpan atau batal. %>
+<% if (typeof duplikat !== 'undefined' && duplikat.length) { %>
+  <div class="notif notif-peringatan" role="alert">
+    <strong>Kemungkinan data ganda.</strong> Sudah ada data dengan email atau telepon yang sama:
+    <ul class="tanpa-bullet">
+      <% duplikat.forEach(d => { %>
+        <li><%= d.jenis %>: <strong><%= d.nama %></strong> (pemilik: <%= d.pemilik %>) —
+          sama di <%= [d.email_sama && 'email', d.telepon_sama && 'telepon'].filter(Boolean).join(' & ') %></li>
+      <% }) %>
+    </ul>
+    <label class="centang jarak-atas"><input type="checkbox" name="abaikan_duplikat" value="ya"> Saya sudah memeriksa; tetap simpan sebagai data baru</label>
+  </div>
+<% } %>

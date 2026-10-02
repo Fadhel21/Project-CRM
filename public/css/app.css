@@ -64,6 +64,14 @@ td.angka, th.angka { text-align: right; font-variant-numeric: tabular-nums; }
 .jarak-atas { margin-top: 1rem; }
 label.centang { flex-direction: row; align-items: center; gap: .5rem; }
 label.centang input { width: auto; }
+.lebar-cari { max-width: 360px; }
+.paginasi { margin-top: .75rem; }
+dl.info { display: grid; grid-template-columns: 140px 1fr; gap: .4rem 1rem; margin: 1rem 0 0; }
+dl.info dt { color: var(--redup); }
+dl.info dd { margin: 0; }
+.pra { white-space: pre-line; }
+.daftar-riwayat { list-style: none; margin: 0; padding: 0; }
+.daftar-riwayat li { padding: .5rem 0; border-bottom: 1px solid var(--garis); }
 
 .htmx-indicator { opacity: 0; transition: opacity .2s; }
 .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }

@@ -1,0 +1,13 @@
+<%# Dropdown pemilik data. Sales tidak melihatnya karena selalu menjadi pemilik datanya sendiri. %>
+<% if (pengguna.peran !== 'sales') { %>
+  <label>Pemilik
+    <select name="pemilik_id">
+      <% pemilik.forEach(p => { %>
+        <option value="<%= p.id %>" <%= String(data.pemilik_id) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option>
+      <% }) %>
+      <% if (data.pemilik_id && !pemilik.some(p => String(p.id) === String(data.pemilik_id))) { %>
+        <option value="<%= data.pemilik_id %>" selected><%= data.pemilik || 'Pemilik saat ini' %></option>
+      <% } %>
+    </select>
+  </label>
+<% } %>

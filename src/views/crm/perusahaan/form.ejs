@@ -1,0 +1,19 @@
+<%- include('../../partials/atas') %>
+<form class="kartu form-sempit" method="post" action="<%= data.id ? '/perusahaan/' + data.id : '/perusahaan' %>">
+  <%- include('../../partials/galat-form') %>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Nama perusahaan <input name="nama" value="<%= data.nama || '' %>" required></label>
+  <label>Industri <input name="industri" value="<%= data.industri || '' %>"></label>
+  <div class="grid">
+    <label>Email <input type="email" name="email" value="<%= data.email || '' %>"></label>
+    <label>Telepon <input name="telepon" value="<%= data.telepon || '' %>"></label>
+  </div>
+  <label>Situs web <input name="situs" value="<%= data.situs || '' %>"></label>
+  <label>Alamat <textarea name="alamat" rows="3"><%= data.alamat || '' %></textarea></label>
+  <%- include('../../partials/pilih-pemilik') %>
+  <div class="baris">
+    <button class="tombol tombol-utama">Simpan</button>
+    <a class="tombol" href="<%= data.id ? '/perusahaan/' + data.id : '/perusahaan' %>">Batal</a>
+  </div>
+</form>
+<%- include('../../partials/bawah') %>

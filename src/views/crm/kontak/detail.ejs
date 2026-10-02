@@ -1,0 +1,21 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <h2><%= data.nama %></h2>
+    <div class="baris">
+      <a class="tombol" href="/kontak/<%= data.id %>/ubah">Ubah</a>
+      <%- include('../../partials/tombol-hapus', { aksi: `/kontak/${data.id}/hapus`, label: 'kontak ini' }) %>
+    </div>
+  </div>
+  <dl class="info">
+    <dt>Jabatan</dt><dd><%= data.jabatan || '-' %></dd>
+    <dt>Perusahaan</dt><dd><% if (data.perusahaan) { %><a href="/perusahaan/<%= data.perusahaan_id %>"><%= data.perusahaan %></a><% } else { %>-<% } %></dd>
+    <dt>Email</dt><dd><%= data.email || '-' %></dd>
+    <dt>Telepon</dt><dd><%= data.telepon || '-' %></dd>
+    <dt>Catatan</dt><dd class="pra"><%= data.catatan || '-' %></dd>
+    <dt>Pemilik</dt><dd><%= data.pemilik %></dd>
+  </dl>
+</section>
+<%- include('../../partials/riwayat') %>
+<%- include('../../partials/bawah') %>
