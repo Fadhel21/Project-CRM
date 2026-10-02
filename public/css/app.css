@@ -58,6 +58,13 @@ td.angka, th.angka { text-align: right; font-variant-numeric: tabular-nums; }
 .form-login h1 { margin-bottom: 1rem; }
 .form-login .tombol { width: 100%; justify-content: center; }
 
+.tanpa-bullet { margin: 0; padding-left: 1.1rem; }
+.form-sempit { max-width: 560px; }
+.lebar-sedang { max-width: 260px; }
+.jarak-atas { margin-top: 1rem; }
+label.centang { flex-direction: row; align-items: center; gap: .5rem; }
+label.centang input { width: auto; }
+
 .htmx-indicator { opacity: 0; transition: opacity .2s; }
 .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
 

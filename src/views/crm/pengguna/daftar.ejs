@@ -1,0 +1,41 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara"><h2>Pengguna</h2><a class="tombol tombol-utama" href="/pengguna/baru">+ Pengguna baru</a></div>
+  <div class="tabel-gulir"><table>
+    <thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Tim</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    <% daftar.forEach(p => { %>
+      <tr>
+        <td><%= p.nama %></td><td><%= p.email %></td>
+        <td><span class="lencana"><%= p.peran %></span></td><td><%= p.tim || '-' %></td>
+        <td><%= p.aktif ? 'Aktif' : 'Nonaktif' %></td>
+        <td><a href="/pengguna/<%= p.id %>/ubah">Ubah</a></td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table></div>
+</section>
+<section class="kartu">
+  <h2>Tim</h2>
+  <table>
+    <thead><tr><th>Nama tim</th><th class="angka">Anggota aktif</th></tr></thead>
+    <tbody>
+    <% tim.forEach(t => { %>
+      <tr><td>
+        <form class="baris" method="post" action="/tim/<%= t.id %>">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input class="lebar-sedang" name="nama" value="<%= t.nama %>" required>
+          <button class="tombol tombol-kecil">Simpan</button>
+        </form>
+      </td><td class="angka"><%= t.jumlah_anggota %></td></tr>
+    <% }) %>
+    </tbody>
+  </table>
+  <form class="baris jarak-atas" method="post" action="/tim">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input class="lebar-sedang" name="nama" placeholder="Nama tim baru" required>
+    <button class="tombol">+ Tambah tim</button>
+  </form>
+</section>
+<%- include('../../partials/bawah') %>

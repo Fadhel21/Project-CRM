@@ -2,6 +2,7 @@
   // Menu: [jalur, label, path ikon SVG, peran yang boleh melihat (kosong = semua)]
   const menu = [
     ['/', 'Beranda', 'M3 12l9-9 9 9M5 10v10h14V10', []],
+    ['/pengguna', 'Pengguna & Tim', 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8', ['admin']],
   ];
   const aktif = (j) => j === '/' ? jalur === '/' : jalur.startsWith(j);
 %>

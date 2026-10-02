@@ -57,4 +57,66 @@ function logout(req, res) {
   res.redirect('/login');
 }
 
-module.exports = { formLogin, login, logout };
+// ---- Pengelolaan pengguna & tim (khusus admin) ----
+
+async function halamanDaftar(req, res, next) {
+  try {
+    const [daftar, tim] = await Promise.all([penggunaService.daftar(), penggunaService.daftarTim()]);
+    res.render('crm/pengguna/daftar', { judul: 'Pengguna & Tim', daftar, tim, pesan: req.query.pesan || null });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function tampilForm(res, { data, galat = [], status = 200 }) {
+  const tim = await penggunaService.daftarTim();
+  res.status(status).render('crm/pengguna/form', {
+    judul: data.id ? 'Ubah Pengguna' : 'Pengguna Baru', data, tim, peran: penggunaService.PERAN, galat });
+}
+
+async function formBaru(req, res, next) {
+  try {
+    await tampilForm(res, { data: { peran: 'sales', aktif: true } });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function formUbah(req, res, next) {
+  try {
+    const data = await penggunaService.ambil(req.params.id);
+    if (!data) return next(Object.assign(new Error('Pengguna tidak ditemukan.'), { status: 404 }));
+    await tampilForm(res, { data });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function simpan(req, res, next) {
+  const id = req.params.id || null;
+  try {
+    if (id) await penggunaService.ubah(id, req.body, req.pengguna.id);
+    else await penggunaService.buat(req.body, req.pengguna.id);
+    res.redirect(`/pengguna?pesan=${encodeURIComponent('Pengguna tersimpan.')}`);
+  } catch (err) {
+    if (err.status !== 422) return next(err);
+    try {
+      const data = { ...req.body, id, aktif: req.body.aktif === 'on' };
+      await tampilForm(res, { data, galat: err.daftar, status: 422 });
+    } catch (e) {
+      next(e);
+    }
+  }
+}
+
+async function simpanTim(req, res, next) {
+  try {
+    await penggunaService.simpanTim(req.params.id || null, req.body, req.pengguna.id);
+    res.redirect(`/pengguna?pesan=${encodeURIComponent('Tim tersimpan.')}`);
+  } catch (err) {
+    if (err.status === 422) return res.redirect(`/pengguna?pesan=${encodeURIComponent(err.message)}`);
+    next(err);
+  }
+}
+
+module.exports = { formLogin, login, logout, halamanDaftar, formBaru, formUbah, simpan, simpanTim };

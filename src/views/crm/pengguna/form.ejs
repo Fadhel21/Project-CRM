@@ -1,0 +1,23 @@
+<%- include('../../partials/atas') %>
+<form class="kartu form-sempit" method="post" action="<%= data.id ? '/pengguna/' + data.id : '/pengguna' %>">
+  <%- include('../../partials/galat-form', { galat }) %>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Nama <input name="nama" value="<%= data.nama || '' %>" required></label>
+  <label>Email <input type="email" name="email" value="<%= data.email || '' %>" required></label>
+  <label>Peran
+    <select name="peran"><% peran.forEach(p => { %><option value="<%= p %>" <%= data.peran === p ? 'selected' : '' %>><%= p %></option><% }) %></select>
+  </label>
+  <label>Tim
+    <select name="tim_id"><option value="">- Tanpa tim -</option>
+      <% tim.forEach(t => { %><option value="<%= t.id %>" <%= String(data.tim_id) === String(t.id) ? 'selected' : '' %>><%= t.nama %></option><% }) %>
+    </select>
+  </label>
+  <label><%= data.id ? 'Password baru (kosongkan bila tidak diganti)' : 'Password (min. 8 karakter)' %>
+    <input type="password" name="password" autocomplete="new-password" minlength="8" <%= data.id ? '' : 'required' %>>
+  </label>
+  <% if (data.id) { %>
+    <label class="centang"><input type="checkbox" name="aktif" <%= data.aktif ? 'checked' : '' %>> Akun aktif</label>
+  <% } %>
+  <div class="baris"><button class="tombol tombol-utama">Simpan</button><a class="tombol" href="/pengguna">Batal</a></div>
+</form>
+<%- include('../../partials/bawah') %>

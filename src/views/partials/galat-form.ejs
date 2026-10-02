@@ -1,0 +1,3 @@
+<% if (typeof galat !== 'undefined' && galat && galat.length) { %>
+  <div class="notif notif-galat" role="alert"><ul class="tanpa-bullet"><% galat.forEach(g => { %><li><%= g %></li><% }) %></ul></div>
+<% } %>
