@@ -1,0 +1,70 @@
+/* Gaya CRM — ditulis tangan, tanpa framework */
+:root {
+  --latar: #f5f6f8; --permukaan: #fff; --teks: #1d2433; --redup: #667085; --garis: #e3e6eb;
+  --utama: #2f5bd3; --utama-gelap: #2347a8; --sukses: #1a7f4b; --galat: #b42318; --peringatan: #b54708;
+  --radius: 8px; --bayang: 0 1px 2px rgba(16,24,40,.06);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; color: var(--teks);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--latar); }
+a { color: var(--utama); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 1.35rem; margin: 0; }
+h2 { font-size: 1.1rem; margin: 0 0 .75rem; }
+.redup { color: var(--redup); }
+
+.kerangka { display: flex; min-height: 100vh; }
+.sidebar { width: 220px; background: #111827; color: #e5e7eb; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar .merek { font-weight: 700; font-size: 1.2rem; padding: 1.1rem 1.25rem; color: #fff; }
+.sidebar ul { list-style: none; margin: 0; padding: 0 .5rem; flex: 1; }
+.sidebar a { display: flex; gap: .6rem; align-items: center; padding: .55rem .75rem; border-radius: 6px; color: #cbd5e1; }
+.sidebar a:hover { background: #1f2937; text-decoration: none; color: #fff; }
+.sidebar a.aktif { background: var(--utama); color: #fff; }
+.sidebar .profil { padding: 1rem 1.25rem; border-top: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.sidebar .redup { color: #9ca3af; }
+.isi { flex: 1; padding: 1.25rem 1.5rem; min-width: 0; }
+.bilah-atas { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+.menu-hp { display: none; }
+
+.kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--bayang); margin-bottom: 1rem; }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.baris { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.antara { justify-content: space-between; }
+
+label { display: flex; flex-direction: column; gap: .3rem; font-size: .9rem; font-weight: 500; margin-bottom: .8rem; }
+input, select, textarea { font: inherit; padding: .5rem .65rem; border: 1px solid var(--garis); border-radius: 6px; background: #fff; width: 100%; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--utama); outline-offset: -1px; }
+.tombol { display: inline-flex; align-items: center; gap: .35rem; font: inherit; padding: .5rem .9rem; border: 1px solid var(--garis); border-radius: 6px; background: #fff; color: var(--teks); cursor: pointer; }
+.tombol:hover { background: #f2f4f7; text-decoration: none; }
+.tombol-utama { background: var(--utama); border-color: var(--utama); color: #fff; }
+.tombol-utama:hover { background: var(--utama-gelap); }
+.tombol-bahaya { color: var(--galat); }
+.tombol-kecil { padding: .3rem .6rem; font-size: .85rem; }
+.tombol-ikon { background: none; border: 0; cursor: pointer; color: inherit; padding: .25rem; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: .6rem .5rem; border-bottom: 1px solid var(--garis); vertical-align: top; }
+th { font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: var(--redup); }
+td.angka, th.angka { text-align: right; font-variant-numeric: tabular-nums; }
+.lencana { display: inline-block; padding: .1rem .5rem; border-radius: 999px; font-size: .8rem; background: #eef2ff; color: var(--utama); }
+
+.notif { padding: .65rem .9rem; border-radius: 6px; margin-bottom: 1rem; border: 1px solid; }
+.notif-galat { background: #fef3f2; border-color: #fecdca; color: var(--galat); }
+.notif-sukses { background: #ecfdf3; border-color: #abefc6; color: var(--sukses); }
+.notif-peringatan { background: #fffaeb; border-color: #fedf89; color: var(--peringatan); }
+
+.halaman-login { display: grid; place-items: center; min-height: 100vh; }
+.form-login { width: min(380px, 92vw); }
+.form-login h1 { margin-bottom: 1rem; }
+.form-login .tombol { width: 100%; justify-content: center; }
+
+.htmx-indicator { opacity: 0; transition: opacity .2s; }
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; }
+
+@media (max-width: 800px) {
+  .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 20; transform: translateX(-100%); transition: transform .2s; }
+  .sidebar.terbuka { transform: none; }
+  .menu-hp { display: inline-flex; }
+  .isi { padding: 1rem; }
+  .tabel-gulir { overflow-x: auto; }
+}

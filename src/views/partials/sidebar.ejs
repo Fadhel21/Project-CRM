@@ -1,0 +1,25 @@
+<%
+  // Menu: [jalur, label, path ikon SVG, peran yang boleh melihat (kosong = semua)]
+  const menu = [
+    ['/', 'Beranda', 'M3 12l9-9 9 9M5 10v10h14V10', []],
+  ];
+  const aktif = (j) => j === '/' ? jalur === '/' : jalur.startsWith(j);
+%>
+<nav class="sidebar" :class="{ terbuka: menu }" aria-label="Menu utama">
+  <div class="merek">CRM</div>
+  <ul>
+    <% menu.filter(m => !m[3].length || m[3].includes(pengguna.peran)).forEach(([j, label, ikon]) => { %>
+      <li><a href="<%= j %>" class="<%= aktif(j) ? 'aktif' : '' %>">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="<%= ikon %>"/></svg>
+        <%= label %>
+      </a></li>
+    <% }) %>
+  </ul>
+  <div class="profil">
+    <div><strong><%= pengguna.nama %></strong><br><small class="redup"><%= pengguna.peran %></small></div>
+    <form method="post" action="/logout">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="tombol tombol-kecil" type="submit">Keluar</button>
+    </form>
+  </div>
+</nav>

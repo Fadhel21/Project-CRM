@@ -1,0 +1,12 @@
+<%- include('partials/kepala') %>
+<body class="halaman-login">
+  <form class="kartu form-login" method="post" action="/login">
+    <h1>Masuk ke CRM</h1>
+    <% if (galat) { %><div class="notif notif-galat" role="alert"><%= galat %></div><% } %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>Email <input type="email" name="email" value="<%= email %>" required autofocus autocomplete="username"></label>
+    <label>Password <input type="password" name="password" required autocomplete="current-password"></label>
+    <button class="tombol tombol-utama" type="submit">Masuk</button>
+  </form>
+</body>
+</html>
