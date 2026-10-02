@@ -31,7 +31,7 @@ test('login salah ditolak, login benar masuk ke beranda', async () => {
   await k.masuk(admin.email);
   const beranda = await k.get('/');
   assert.equal(beranda.status, 200);
-  assert.match(beranda.teks, /Selamat datang/);
+  assert.match(beranda.teks, /class="baris-kpi"/);
 });
 
 test('sales tidak bisa membuka atau mengubah data pengguna', async () => {
