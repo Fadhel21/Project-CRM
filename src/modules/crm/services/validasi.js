@@ -39,6 +39,11 @@ function normalTelepon(v) {
  * Format lain (mis. "1,234", "1.2.3") ditolak, bukan ditebak.
  */
 function uang(v) {
+  return desimal(v, 13);
+}
+
+/** Parser desimal umum (aturan format sama dengan uang), maks digitBulat digit sebelum koma, 2 desimal. */
+function desimal(v, digitBulat) {
   let t = teks(v).replace(/^rp\.?\s*/i, '').replace(/\s/g, '');
   if (t === '') return '0';
   if (t.includes(',')) {
@@ -50,7 +55,8 @@ function uang(v) {
     return null;
   }
   t = t.replace(/^0+(?=\d)/, '');
-  if (!/^\d{1,13}(\.\d{1,2})?$/.test(t)) return null;
+  const [bulat] = t.split('.');
+  if (bulat.length > digitBulat) return null;
   return t;
 }
 
@@ -59,4 +65,4 @@ function idAtauNull(v) {
   return /^\d+$/.test(t) ? t : null;
 }
 
-module.exports = { GalatValidasi, teks, teksAtauNull, emailValid, normalTelepon, uang, idAtauNull };
+module.exports = { GalatValidasi, teks, teksAtauNull, emailValid, normalTelepon, uang, desimal, idAtauNull };

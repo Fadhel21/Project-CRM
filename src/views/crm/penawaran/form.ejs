@@ -1,0 +1,70 @@
+<%- include('../../partials/atas') %>
+<form class="kartu" method="post" action="<%= data.id ? '/penawaran/' + data.id : '/penawaran' %>"
+  hx-post="/penawaran/pratinjau" hx-target="#ringkasan" hx-swap="outerHTML" hx-trigger="input delay:400ms, ubah-baris delay:50ms"
+  x-data="formPenawaran(<%= JSON.stringify(baris) %>)">
+  <%- include('../../partials/galat-form') %>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <% if (data.pajak_persen) { %><input type="hidden" name="pajak_persen" value="<%= data.pajak_persen %>"><% } %>
+
+  <div class="grid">
+    <% if (!data.id) { %>
+      <label>Deal
+        <select name="deal_id" required>
+          <option value="">- Pilih deal terbuka -</option>
+          <% deal.forEach(d => { %><option value="<%= d.id %>" <%= String(data.deal_id) === String(d.id) ? 'selected' : '' %>><%= d.judul %><%= d.perusahaan ? ` — ${d.perusahaan}` : '' %></option><% }) %>
+        </select>
+      </label>
+    <% } else { %>
+      <label>Nomor <input value="<%= data.nomor %>" disabled></label>
+    <% } %>
+    <label>Perihal <input name="judul" value="<%= data.judul || '' %>" required placeholder="mis. Pengadaan laptop kantor"></label>
+  </div>
+  <div class="grid">
+    <label>Tanggal <input type="date" name="tanggal" value="<%= data.tanggal || '' %>"></label>
+    <label>Berlaku sampai <input type="date" name="berlaku_sampai" value="<%= data.berlaku_sampai || '' %>">
+      <small class="redup">Kosongkan = <%= peng.penawaran_berlaku_hari %> hari dari tanggal penawaran</small></label>
+  </div>
+
+  <h2>Item</h2>
+  <div class="tabel-gulir">
+    <table class="tabel-item">
+      <thead><tr><th>Nama & deskripsi</th><th class="angka">Qty</th><th>Satuan</th><th class="angka">Harga (Rp)</th><th class="angka">Disk. %</th><th></th></tr></thead>
+      <tbody>
+        <template x-for="(b, i) in baris" :key="b.kunci">
+          <tr>
+            <td>
+              <input name="item_nama" x-model="b.nama" placeholder="Nama item" :aria-label="'Nama item ' + (i + 1)">
+              <input name="item_deskripsi" x-model="b.deskripsi" placeholder="Deskripsi (opsional)" class="input-kecil" :aria-label="'Deskripsi item ' + (i + 1)">
+            </td>
+            <td><input name="item_qty" x-model="b.qty" inputmode="decimal" class="angka lebar-angka" :aria-label="'Qty item ' + (i + 1)"></td>
+            <td><input name="item_satuan" x-model="b.satuan" placeholder="unit" class="lebar-satuan" :aria-label="'Satuan item ' + (i + 1)"></td>
+            <td><input name="item_harga" x-model="b.harga" inputmode="decimal" class="angka" placeholder="0" :aria-label="'Harga item ' + (i + 1)"></td>
+            <td><input name="item_diskon" x-model="b.diskon" inputmode="decimal" class="angka lebar-angka" :aria-label="'Diskon item ' + (i + 1)"></td>
+            <td><button type="button" class="tombol-ikon tombol-bahaya" @click="hapus(i)" :disabled="baris.length === 1" aria-label="Hapus baris">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg></button></td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <button type="button" class="tombol jarak-atas" @click="tambah()">+ Tambah baris</button>
+
+  <div class="grid jarak-atas">
+    <div>
+      <label>Diskon dokumen (%) <input name="diskon_persen" value="<%= data.diskon_persen ?? '0' %>" inputmode="decimal" class="lebar-pendek">
+        <small class="redup">Maksimal <%= peng.diskon_maks_persen %>% (per item & per dokumen)</small></label>
+      <label>Catatan <textarea name="catatan" rows="2"><%= data.catatan || '' %></textarea></label>
+      <label>Syarat & ketentuan <textarea name="syarat" rows="3"><%= data.syarat ?? peng.penawaran_syarat ?? '' %></textarea></label>
+    </div>
+    <div>
+      <h2>Ringkasan</h2>
+      <%- include('ringkasan') %>
+    </div>
+  </div>
+
+  <div class="baris jarak-atas">
+    <button class="tombol tombol-utama" type="submit">Simpan draf</button>
+    <a class="tombol" href="<%= data.id ? '/penawaran/' + data.id : '/penawaran' %>">Batal</a>
+  </div>
+</form>
+<%- include('../../partials/bawah') %>

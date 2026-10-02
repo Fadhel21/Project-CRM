@@ -32,6 +32,20 @@
     <button class="tombol tombol-utama">Pindahkan</button>
   </form>
 </section>
+<section class="kartu">
+  <div class="baris antara"><h2>Penawaran</h2>
+    <% if (data.jenis_tahap === 'terbuka') { %><a class="tombol" href="/penawaran/baru?deal_id=<%= data.id %>">+ Buat penawaran</a><% } %></div>
+  <table>
+    <thead><tr><th>Nomor</th><th>Status</th><th class="angka">Total</th><th>Tanggal</th></tr></thead>
+    <tbody>
+    <% penawaran.forEach(p => { %>
+      <tr><td><a href="/penawaran/<%= p.id %>"><%= p.nomor %></a></td><td><%- include('../penawaran/status', { s: p.status_tampil }) %></td>
+        <td class="angka"><%= f.rupiah(p.total) %></td><td><%= f.tanggal(p.tanggal) %></td></tr>
+    <% }) %>
+    <% if (!penawaran.length) { %><tr><td colspan="4" class="redup">Belum ada penawaran.</td></tr><% } %>
+    </tbody>
+  </table>
+</section>
 <%- include('../../partials/linimasa') %>
 <%- include('../../partials/riwayat') %>
 <%- include('../../partials/bawah') %>

@@ -1,0 +1,4 @@
+<%
+  const kelas = { draf: '', terkirim: '', diterima: 'lencana-menang', ditolak: 'lencana-kalah', direvisi: 'lencana-abu', kedaluwarsa: 'lencana-peringatan' };
+  const label = { draf: 'Draf', terkirim: 'Terkirim', diterima: 'Diterima', ditolak: 'Ditolak', direvisi: 'Direvisi', kedaluwarsa: 'Kedaluwarsa' };
+%><span class="lencana <%= kelas[s] || '' %>"><%= label[s] || s %></span>

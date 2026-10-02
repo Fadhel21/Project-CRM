@@ -195,8 +195,8 @@ async function ubah(id, input, pengguna) {
  * Tahap Kalah wajib disertai alasan. Pindah ke tahap terbuka membuka kembali deal (ditutup_at = NULL).
  * Mengembalikan false bila tahap tidak berubah.
  */
-async function pindahTahap(id, keTahapId, pengguna, { alasanKalah = '' } = {}) {
-  return transaksi(async (k) => {
+async function pindahTahap(id, keTahapId, pengguna, { alasanKalah = '' } = {}, klienLuar = null) {
+  const kerja = async (k) => {
     const deal = await ambil(id, pengguna, k);
     if (!deal) throw galat404('Deal tidak ditemukan.');
     const tahap = (await daftarTahap(k)).find((t) => String(t.id) === String(keTahapId));
@@ -215,7 +215,13 @@ async function pindahTahap(id, keTahapId, pengguna, { alasanKalah = '' } = {}) {
       [id, deal.tahap_id, tahap.id, pengguna.id]);
     await audit.catat(k, { penggunaId: pengguna.id, entitas: 'deal', entitasId: id, aksi: 'pindah_tahap', kolom: ['tahap_id'] });
     return true;
-  });
+  };
+  return klienLuar ? kerja(klienLuar) : transaksi(kerja);
+}
+
+/** Tahap pertama dengan jenis tertentu ('menang' / 'kalah'). */
+async function tahapJenis(jenis, klien) {
+  return (await daftarTahap(klien)).find((t) => t.jenis === jenis) || null;
 }
 
 async function riwayatTahap(dealId) {
@@ -237,6 +243,18 @@ async function hapus(id, pengguna) {
   });
 }
 
+/** Deal terbuka yang boleh dilihat pengguna (untuk dropdown penawaran). */
+async function pilihanTerbuka(pengguna) {
+  const params = [];
+  const { rows } = await query(
+    `SELECT d.id, d.judul, p.nama AS perusahaan FROM deal d
+     JOIN tahap_pipeline t ON t.id = d.tahap_id
+     LEFT JOIN perusahaan p ON p.id = d.perusahaan_id AND p.deleted_at IS NULL
+     WHERE d.deleted_at IS NULL AND t.jenis = 'terbuka' AND ${filterPemilik(pengguna, 'd.pemilik_id', params)}
+     ORDER BY d.updated_at DESC LIMIT 500`, params);
+  return rows;
+}
+
 /** Deal milik kontak/perusahaan tertentu (untuk halaman detail), tetap dengan filter pemilik. */
 async function untuk(pengguna, { kontakId = null, perusahaanId = null }) {
   const params = [];
@@ -256,6 +274,6 @@ async function untuk(pengguna, { kontakId = null, perusahaanId = null }) {
 }
 
 module.exports = {
-  daftarTahap, ambil, validasi, cekTautan, buat, daftar, kanban, ubah, pindahTahap, riwayatTahap, hapus, untuk,
+  daftarTahap, tahapJenis, ambil, validasi, cekTautan, buat, daftar, kanban, ubah, pindahTahap, riwayatTahap, hapus, untuk, pilihanTerbuka,
 };
 

@@ -1,0 +1,17 @@
+<%- include('../../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses"><%= pesan %></div><% } %>
+<section class="kartu">
+  <div class="baris antara">
+    <form class="baris" hx-get="/penawaran" hx-target="#hasil" hx-push-url="true"
+      hx-trigger="input changed delay:300ms from:input, change from:select, submit">
+      <input type="search" name="q" value="<%= filter.q %>" placeholder="Cari nomor, perihal, kontak, perusahaan…" class="lebar-cari" aria-label="Cari penawaran">
+      <select name="status" class="lebar-pendek" aria-label="Filter status">
+        <option value="">Semua status</option>
+        <% Object.entries(STATUS).forEach(([k, v]) => { %><option value="<%= k %>" <%= filter.status === k ? 'selected' : '' %>><%= v %></option><% }) %>
+      </select>
+    </form>
+    <a class="tombol tombol-utama" href="/penawaran/baru">+ Penawaran baru</a>
+  </div>
+  <div id="hasil"><%- include('tabel') %></div>
+</section>
+<%- include('../../partials/bawah') %>

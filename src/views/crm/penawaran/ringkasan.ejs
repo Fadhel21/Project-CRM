@@ -1,0 +1,19 @@
+<%# Ringkasan total hasil hitung SQL. Parameter: pratinjau { galat, hasil, pajak } %>
+<div id="ringkasan" class="ringkasan-penawaran" aria-live="polite">
+  <% if (pratinjau.galat.length) { %>
+    <div class="notif notif-peringatan"><ul class="tanpa-bullet"><% pratinjau.galat.forEach(g => { %><li><%= g %></li><% }) %></ul></div>
+  <% } else if (pratinjau.hasil) { const r = pratinjau.hasil.ringkas; %>
+    <% if (pratinjau.hasil.baris.length) { %>
+      <ol class="total-baris redup">
+        <% pratinjau.hasil.baris.forEach((b, i) => { %><li>Item <%= i + 1 %>: <%= f.rupiah(b.total) %><% if (Number(b.diskon_nilai) > 0) { %> <small>(diskon <%= f.rupiah(b.diskon_nilai) %>)</small><% } %></li><% }) %>
+      </ol>
+    <% } %>
+    <dl class="info ringkas">
+      <dt>Subtotal</dt><dd class="angka"><%= f.rupiah(r.subtotal) %></dd>
+      <dt>Diskon dokumen</dt><dd class="angka">-<%= f.rupiah(r.diskon_nilai) %></dd>
+      <dt>DPP</dt><dd class="angka"><%= f.rupiah(r.dpp) %></dd>
+      <dt>PPN <%= String(pratinjau.pajak).replace(/\.0+$/, '') %>%</dt><dd class="angka"><%= f.rupiah(r.pajak_nilai) %></dd>
+      <dt class="total">Total</dt><dd class="angka total"><%= f.rupiah(r.total) %></dd>
+    </dl>
+  <% } %>
+</div>

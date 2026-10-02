@@ -1,0 +1,118 @@
+<%- include('../../partials/atas') %>
+<% const s = data.status; %>
+<% if (pesan) { %><div class="notif notif-sukses" role="status"><%= pesan %></div><% } %>
+<%- include('../../partials/galat-form') %>
+
+<section class="kartu">
+  <div class="baris antara">
+    <div>
+      <h2><%= data.nomor %> <%- include('status', { s: data.status_tampil }) %></h2>
+      <div class="redup"><%= data.judul %> · deal <a href="/deal/<%= data.deal_id %>"><%= data.deal %></a></div>
+    </div>
+    <div class="baris">
+      <a class="tombol" href="/penawaran/<%= data.id %>/pdf" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>
+        Lihat PDF</a>
+      <a class="tombol" href="/penawaran/<%= data.id %>/pdf?unduh=1">Unduh</a>
+      <% if (s === 'draf') { %>
+        <a class="tombol" href="/penawaran/<%= data.id %>/ubah">Ubah</a>
+        <%- include('../../partials/tombol-hapus', { aksi: `/penawaran/${data.id}/hapus`, label: 'draf penawaran ini' }) %>
+      <% } %>
+      <% if (s === 'terkirim' || s === 'ditolak') { %>
+        <form method="post" action="/penawaran/<%= data.id %>/revisi" data-konfirmasi="Buat revisi baru? Penawaran ini akan dikunci sebagai 'Direvisi'.">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="tombol">Buat revisi</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+
+  <dl class="info">
+    <dt>Kepada</dt><dd><%= data.perusahaan || '-' %><% if (data.kontak) { %> · u.p. <a href="/kontak/<%= data.kontak_id %>"><%= data.kontak %></a><% } %></dd>
+    <dt>Tanggal</dt><dd><%= f.tanggal(data.tanggal) %></dd>
+    <dt>Berlaku sampai</dt><dd><%= f.tanggal(data.berlaku_sampai) %></dd>
+    <% if (data.dikirim_at) { %><dt>Dikirim</dt><dd><%= f.tanggalJam(data.dikirim_at) %> ke <%= data.dikirim_ke %></dd><% } %>
+    <% if (data.diputuskan_at) { %><dt>Diputuskan</dt><dd><%= f.tanggalJam(data.diputuskan_at) %></dd><% } %>
+    <% if (data.alasan_ditolak) { %><dt>Alasan ditolak</dt><dd class="pra"><%= data.alasan_ditolak %></dd><% } %>
+    <dt>Pemilik</dt><dd><%= data.pemilik %></dd>
+  </dl>
+</section>
+
+<% if (s === 'draf') { %>
+  <section class="kartu">
+    <h2>Kirim ke pelanggan</h2>
+    <form class="baris" method="post" action="/penawaran/<%= data.id %>/kirim" data-konfirmasi="Kirim penawaran? Setelah dikirim, penawaran tidak bisa diubah lagi (hanya lewat revisi).">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input type="email" name="email" value="<%= data.kontak_email || '' %>" placeholder="email@pelanggan.co.id" class="lebar-cari" required aria-label="Email penerima">
+      <button class="tombol tombol-utama">Kirim penawaran (PDF)</button>
+    </form>
+  </section>
+<% } %>
+
+<% if (s === 'terkirim') { %>
+  <section class="kartu" x-data="{ tolak: false }">
+    <h2>Keputusan pelanggan</h2>
+    <div class="baris">
+      <form method="post" action="/penawaran/<%= data.id %>/terima" data-konfirmasi="Tandai diterima? Deal akan otomatis dipindahkan ke tahap Menang.">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="tombol tombol-utama">Diterima</button>
+      </form>
+      <button type="button" class="tombol tombol-bahaya" @click="tolak = !tolak" :aria-expanded="tolak">Ditolak…</button>
+    </div>
+    <form class="baris jarak-atas" method="post" action="/penawaran/<%= data.id %>/tolak" x-show="tolak" x-cloak>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <input name="alasan" placeholder="Alasan penolakan (wajib)" class="lebar-cari" required aria-label="Alasan penolakan">
+      <button class="tombol tombol-bahaya">Simpan penolakan</button>
+    </form>
+  </section>
+<% } %>
+
+<section class="kartu">
+  <h2>Item</h2>
+  <div class="tabel-gulir"><table>
+    <thead><tr><th>#</th><th>Item</th><th class="angka">Qty</th><th class="angka">Harga</th><th class="angka">Disk.</th><th class="angka">Jumlah</th></tr></thead>
+    <tbody>
+    <% item.forEach((i, n) => { %>
+      <tr>
+        <td><%= n + 1 %></td>
+        <td><strong><%= i.nama %></strong><% if (i.deskripsi) { %><br><small class="redup"><%= i.deskripsi %></small><% } %></td>
+        <td class="angka"><%= String(i.qty).replace(/\.00$/, '').replace('.', ',') %> <%= i.satuan || '' %></td>
+        <td class="angka"><%= f.rupiah(i.harga) %></td>
+        <td class="angka"><%= Number(i.diskon_persen) > 0 ? `${String(i.diskon_persen).replace(/\.00$/, '')}%` : '-' %></td>
+        <td class="angka"><%= f.rupiah(i.total) %></td>
+      </tr>
+    <% }) %>
+    <% if (!item.length) { %><tr><td colspan="6" class="redup">Belum ada item.</td></tr><% } %>
+    </tbody>
+  </table></div>
+  <dl class="info ringkas jarak-atas">
+    <dt>Subtotal</dt><dd class="angka"><%= f.rupiah(data.subtotal) %></dd>
+    <dt>Diskon dokumen <%= Number(data.diskon_persen) > 0 ? `(${String(data.diskon_persen).replace(/\.00$/, '')}%)` : '' %></dt><dd class="angka">-<%= f.rupiah(data.diskon_nilai) %></dd>
+    <dt>DPP</dt><dd class="angka"><%= f.rupiah(data.dpp) %></dd>
+    <dt>PPN <%= String(data.pajak_persen).replace(/\.00$/, '') %>%</dt><dd class="angka"><%= f.rupiah(data.pajak_nilai) %></dd>
+    <dt class="total">Total</dt><dd class="angka total"><%= f.rupiah(data.total) %></dd>
+  </dl>
+  <% if (data.catatan) { %><h2 class="jarak-atas">Catatan</h2><p class="pra"><%= data.catatan %></p><% } %>
+  <% if (data.syarat) { %><h2 class="jarak-atas">Syarat & ketentuan</h2><p class="pra"><%= data.syarat %></p><% } %>
+</section>
+
+<% if (revisi.length > 1) { %>
+  <section class="kartu">
+    <h2>Riwayat revisi</h2>
+    <table>
+      <thead><tr><th>Nomor</th><th>Status</th><th class="angka">Total</th><th>Dibuat</th></tr></thead>
+      <tbody>
+      <% revisi.forEach(r => { %>
+        <tr <%- String(r.id) === String(data.id) ? 'aria-current="true" class="baris-aktif"' : '' %>>
+          <td><a href="/penawaran/<%= r.id %>"><%= r.nomor %></a></td>
+          <td><%- include('status', { s: r.status_tampil }) %></td>
+          <td class="angka"><%= f.rupiah(r.total) %></td>
+          <td><%= f.tanggalJam(r.created_at) %></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </section>
+<% } %>
+<%- include('../../partials/riwayat') %>
+<%- include('../../partials/bawah') %>

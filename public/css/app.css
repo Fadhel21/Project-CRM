@@ -157,6 +157,21 @@ dl.info dd { margin: 0; }
 .jenis-tugas .ikon-linimasa { background: var(--peringatan-lembut); color: var(--peringatan); }
 .item-linimasa.selesai strong { text-decoration: line-through; color: var(--redup); }
 
+/* ---------- Penawaran ---------- */
+.lencana-abu { background: var(--permukaan-2); color: var(--slate-600); }
+.lencana-peringatan { background: var(--peringatan-lembut); color: var(--peringatan); }
+.tabel-item td { padding: var(--s-2); }
+.tabel-item input { min-width: 0; }
+.tabel-item .input-kecil { margin-top: 4px; min-height: 32px; font-size: .85rem; }
+.lebar-angka { max-width: 90px; }
+.lebar-satuan { max-width: 100px; }
+input.angka { text-align: right; font-variant-numeric: tabular-nums; }
+dl.ringkas { grid-template-columns: 1fr auto; max-width: 380px; margin-left: auto; }
+dl.ringkas dd { font-variant-numeric: tabular-nums; }
+dl.ringkas .total { font-weight: 700; font-size: 1.1rem; color: var(--utama-gelap); border-top: 2px solid var(--navy-900); padding-top: var(--s-2); }
+.ringkasan-penawaran .total-baris { margin: 0 0 var(--s-3); padding-left: 1.2rem; font-size: .85rem; }
+.baris-aktif { background: var(--biru-50); }
+
 /* ---------- Kanban ---------- */
 .papan-kanban { display: flex; gap: var(--s-3); overflow-x: auto; padding-bottom: var(--s-2); align-items: flex-start; }
 .kolom-kanban { flex: 0 0 260px; background: var(--permukaan-2); border-radius: var(--radius); padding: var(--s-3); min-height: 220px; border: 2px dashed transparent; transition: border-color var(--cepat), background var(--cepat); }

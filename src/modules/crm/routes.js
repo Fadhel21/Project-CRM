@@ -13,6 +13,8 @@ const leadService = require('./services/lead');
 const deal = require('./controllers/deal');
 const dealService = require('./services/deal');
 const aktivitas = require('./controllers/aktivitas');
+const penawaran = require('./controllers/penawaran');
+const penawaranService = require('./services/penawaran');
 
 const r = express.Router();
 const admin = butuhPeran('admin');
@@ -77,6 +79,22 @@ r.get('/deal/:id(\\d+)/ubah', aksesDeal, deal.formUbah);
 r.post('/deal/:id(\\d+)', aksesDeal, deal.simpan);
 r.post('/deal/:id(\\d+)/tahap', aksesDeal, deal.pindahTahap);
 r.post('/deal/:id(\\d+)/hapus', aksesDeal, deal.hapus);
+
+// Penawaran
+const aksesPenawaran = pastikanAkses(penawaranService.ambil);
+r.get('/penawaran', penawaran.daftar);
+r.get('/penawaran/baru', penawaran.formBaru);
+r.post('/penawaran', penawaran.simpan);
+r.post('/penawaran/pratinjau', penawaran.pratinjau);
+r.get('/penawaran/:id(\\d+)', aksesPenawaran, penawaran.detail);
+r.get('/penawaran/:id(\\d+)/ubah', aksesPenawaran, penawaran.formUbah);
+r.post('/penawaran/:id(\\d+)', aksesPenawaran, penawaran.simpan);
+r.get('/penawaran/:id(\\d+)/pdf', aksesPenawaran, penawaran.pdf);
+r.post('/penawaran/:id(\\d+)/kirim', aksesPenawaran, penawaran.kirim);
+r.post('/penawaran/:id(\\d+)/terima', aksesPenawaran, penawaran.terima);
+r.post('/penawaran/:id(\\d+)/tolak', aksesPenawaran, penawaran.tolak);
+r.post('/penawaran/:id(\\d+)/revisi', aksesPenawaran, penawaran.revisi);
+r.post('/penawaran/:id(\\d+)/hapus', aksesPenawaran, penawaran.hapus);
 
 // Aktivitas, linimasa, tugas (hak akses diperiksa di service: induk & penanggung jawab)
 r.get('/tugas', aktivitas.daftarTugas);

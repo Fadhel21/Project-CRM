@@ -49,7 +49,12 @@ function klien(dasar) {
     if (csrf) header['x-csrf-token'] = csrf;
     let body = opsi.body;
     if (body && !(body instanceof URLSearchParams) && !(body instanceof FormData) && typeof body === 'object') {
-      body = new URLSearchParams(body);
+      // Array dikirim sebagai field berulang (item_nama=a&item_nama=b), seperti formulir sungguhan
+      const p = new URLSearchParams();
+      for (const [k, v] of Object.entries(body)) {
+        for (const x of [].concat(v)) p.append(k, x ?? '');
+      }
+      body = p;
     }
     const res = await fetch(dasar + jalur, { ...opsi, headers: header, body, redirect: 'manual' });
     for (const c of res.headers.getSetCookie()) {

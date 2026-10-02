@@ -1,0 +1,19 @@
+<div class="tabel-gulir"><table>
+  <thead><tr><th>Nomor</th><th>Perihal</th><th>Kepada</th><th>Status</th><th>Tanggal</th><th class="angka">Total</th><th>Pemilik</th></tr></thead>
+  <tbody>
+  <% hasil.baris.forEach(p => { %>
+    <tr>
+      <td><a href="/penawaran/<%= p.id %>"><strong><%= p.nomor %></strong></a></td>
+      <td><%= p.judul %><br><small class="redup"><%= p.deal %></small></td>
+      <td><%= p.perusahaan || p.kontak || '-' %></td>
+      <td><%- include('status', { s: p.status_tampil }) %></td>
+      <td><%= f.tanggal(p.tanggal) %></td>
+      <td class="angka"><%= f.rupiah(p.total) %></td>
+      <td><%= p.pemilik %></td>
+    </tr>
+  <% }) %>
+  <% if (!hasil.baris.length) { %><tr><td colspan="7" class="redup">Tidak ada data.</td></tr><% } %>
+  </tbody>
+  <tfoot><tr><th colspan="5">Total nilai (sesuai filter)</th><th class="angka"><%= f.rupiah(hasil.jumlahNilai) %></th><th></th></tr></tfoot>
+</table></div>
+<%- include('../../partials/paginasi', { dasar: '/penawaran', ekstra: `&status=${encodeURIComponent(filter.status)}` }) %>

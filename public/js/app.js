@@ -8,6 +8,30 @@
     }
   }
 
+  // ---- Komponen Alpine: baris item penawaran (tambah/hapus baris) ----
+  // Total TIDAK dihitung di sini; setiap perubahan memicu pratinjau HTMX yang dihitung di SQL.
+  document.addEventListener('alpine:init', function () {
+    window.Alpine.data('formPenawaran', function (awal) {
+      var kosong = function () { return { nama: '', deskripsi: '', qty: '1', satuan: '', harga: '', diskon: '0' }; };
+      var n = 0;
+      var beriKunci = function (b) { b.kunci = n; n += 1; return b; };
+      return {
+        baris: (awal && awal.length ? awal : [kosong()]).map(beriKunci),
+        tambah: function () {
+          this.baris.push(beriKunci(kosong()));
+          var self = this;
+          this.$nextTick(function () { self.$dispatch('ubah-baris'); });
+        },
+        hapus: function (i) {
+          if (this.baris.length <= 1) return;
+          this.baris.splice(i, 1);
+          var self = this;
+          this.$nextTick(function () { self.$dispatch('ubah-baris'); });
+        },
+      };
+    });
+  });
+
   document.addEventListener('DOMContentLoaded', function () {
     // Formulir dengan atribut data-konfirmasi meminta konfirmasi sebelum dikirim
     document.addEventListener('submit', function (e) {
