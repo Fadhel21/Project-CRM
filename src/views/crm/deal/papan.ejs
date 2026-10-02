@@ -10,7 +10,7 @@
           <article class="kartu-deal" draggable="true" data-deal-id="<%= d.id %>">
             <a href="/deal/<%= d.id %>"><%= d.judul %></a>
             <div class="nilai"><%= f.rupiah(d.nilai) %></div>
-            <small class="redup"><%= d.perusahaan || d.kontak || '-' %> · <%= d.pemilik %></small>
+            <small class="redup"><%= [d.perusahaan || d.kontak, d.pemilik].filter(Boolean).join(' · ') %></small>
             <% if (d.target_tutup) { %><br><small class="redup">Target: <%= f.tanggal(d.target_tutup) %></small><% } %>
           </article>
         <% }) %>

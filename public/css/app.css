@@ -68,7 +68,7 @@ h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 var(--s-3); letter-spacin
 
 .isi { flex: 1; padding: var(--s-5) var(--s-6); min-width: 0; max-width: 1440px; }
 .bilah-atas { display: flex; align-items: center; gap: var(--s-3); margin-bottom: var(--s-5); }
-.menu-hp { display: none; }
+.bilah-atas .menu-hp { display: none; }
 
 /* ---------- Kartu & tata letak ---------- */
 .kartu { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: var(--s-5); box-shadow: var(--bayang); margin-bottom: var(--s-4); animation: muncul var(--lambat) var(--kurva) both; }
@@ -156,6 +156,26 @@ dl.info dd { margin: 0; }
 .jenis-tahap .ikon-linimasa { background: var(--permukaan-2); color: var(--slate-500); }
 .jenis-tugas .ikon-linimasa { background: var(--peringatan-lembut); color: var(--peringatan); }
 .item-linimasa.selesai strong { text-decoration: line-through; color: var(--redup); }
+
+/* ---------- Dashboard ---------- */
+.bilah-filter { align-items: flex-end; gap: var(--s-4); padding: var(--s-4) var(--s-5); }
+.bilah-filter .baris-label { flex: 0 1 220px; }
+.periode-aktif { margin: 0 0 var(--s-3); font-size: .9rem; }
+.kecil { font-size: .85rem; margin: -6px 0 var(--s-3); }
+.baris-kpi { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-bottom: var(--s-4); }
+.kpi { background: var(--permukaan); border: 1px solid var(--garis); border-radius: var(--radius); padding: var(--s-4) var(--s-5); box-shadow: var(--bayang); animation: muncul var(--lambat) var(--kurva) both; }
+.kpi:nth-child(2) { animation-delay: 40ms; } .kpi:nth-child(3) { animation-delay: 80ms; }
+.kpi:nth-child(4) { animation-delay: 120ms; } .kpi:nth-child(5) { animation-delay: 160ms; }
+.kpi-label { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--slate-500); margin: 0 0 var(--s-1); }
+.kpi-nilai { font-size: clamp(1.15rem, 1.45vw, 1.5rem); white-space: nowrap; font-weight: 700; color: var(--navy-900); font-variant-numeric: tabular-nums; line-height: 1.2; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.kpi-sub { margin: var(--s-1) 0 0; font-size: .85rem; color: var(--redup); }
+.grid-grafik { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
+.grid-grafik .kartu { margin-bottom: 0; }
+.wadah-grafik { position: relative; height: 280px; }
+.tabel-data { margin-top: var(--s-3); }
+.tabel-data summary { cursor: pointer; color: var(--utama); font-weight: 600; font-size: .9rem; min-height: 32px; display: inline-flex; align-items: center; }
+#dasbor > .kartu:last-child { margin-top: var(--s-4); }
+@media (max-width: 800px) { .grid-grafik { grid-template-columns: 1fr; } }
 
 /* ---------- Penawaran ---------- */
 .lencana-abu { background: var(--permukaan-2); color: var(--slate-600); }
@@ -256,7 +276,7 @@ dl.ringkas .total { font-weight: 700; font-size: 1.1rem; color: var(--utama-gela
 @media (max-width: 800px) {
   .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 20; transform: translateX(-100%); transition: transform var(--sedang) var(--kurva); box-shadow: var(--bayang-angkat); }
   .sidebar.terbuka { transform: none; }
-  .menu-hp { display: inline-grid; }
+  .bilah-atas .menu-hp { display: inline-grid; }
   .isi { padding: var(--s-4); }
   dl.info { grid-template-columns: 1fr; gap: 2px; }
   dl.info dd { margin-bottom: var(--s-2); }

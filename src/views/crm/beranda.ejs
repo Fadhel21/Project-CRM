@@ -1,6 +1,28 @@
 <%- include('../partials/atas') %>
-<section class="kartu">
-  <p>Selamat datang, <strong><%= pengguna.nama %></strong>.</p>
-  <p class="redup">Dashboard akan diisi setelah modul deal dan penawaran selesai.</p>
-</section>
+<% if (tugas.terlambat || tugas.hariIni) { %>
+  <div class="notif notif-peringatan" role="status">
+    Anda punya <strong><%= tugas.terlambat %></strong> tugas terlambat dan <strong><%= tugas.hariIni %></strong> tugas hari ini.
+    <a href="/tugas?filter=<%= tugas.terlambat ? 'terlambat' : 'hari_ini' %>">Lihat tugas</a>
+  </div>
+<% } %>
+<form class="kartu bilah-filter baris" hx-get="/" hx-target="#dasbor" hx-push-url="true" hx-trigger="change"
+  x-data="{ periode: '<%= filter.periode %>' }" aria-label="Filter dashboard">
+  <label class="baris-label">Periode
+    <select name="periode" x-model="periode">
+      <% Object.entries(PERIODE).forEach(([k, v]) => { %><option value="<%= k %>" <%= filter.periode === k ? 'selected' : '' %>><%= v %></option><% }) %>
+    </select>
+  </label>
+  <label class="baris-label" x-show="periode === 'kustom'" x-cloak>Dari <input type="date" name="dari" value="<%= filter.dari %>"></label>
+  <label class="baris-label" x-show="periode === 'kustom'" x-cloak>Sampai <input type="date" name="sampai" value="<%= filter.sampai %>"></label>
+  <% if (pengguna.peran !== 'sales') { %>
+    <label class="baris-label">Sales
+      <select name="pemilik">
+        <option value="">Semua <%= pengguna.peran === 'manajer' ? 'anggota tim' : 'sales' %></option>
+        <% pemilik.forEach(p => { %><option value="<%= p.id %>" <%= String(filter.pemilik) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+      </select>
+    </label>
+  <% } %>
+</form>
+<div id="dasbor"><%- include('dasbor-isi') %></div>
+<script src="/js/chart.min.js" defer></script>
 <%- include('../partials/bawah') %>

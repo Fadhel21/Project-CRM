@@ -1,0 +1,102 @@
+<%
+  const r = ringkasan;
+  const persen = (v) => v === null || v === undefined ? '–' : `${String(v).replace('.', ',')}%`;
+  const bln = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const labelBulan = (s) => { const [y, m] = s.split('-'); return `${bln[Number(m) - 1]} ${y.slice(2)}`; };
+  // Data grafik: nilai dikirim sebagai angka hanya untuk skala & tampilan; semua agregat sudah dihitung di SQL
+  const grafikTahap = {
+    jenis: 'tahap',
+    label: perTahap.map(t => t.nama),
+    nilai: perTahap.map(t => Number(t.nilai)),
+    jumlah: perTahap.map(t => Number(t.jumlah)),
+  };
+  const grafikTren = {
+    jenis: 'tren',
+    label: tren.map(t => labelBulan(t.bulan)),
+    menang: tren.map(t => Number(t.menang)),
+    kalah: tren.map(t => Number(t.kalah)),
+  };
+%>
+<p class="redup periode-aktif">Periode <%= f.tanggal(rentang.dari) %> – <%= f.tanggal(rentang.sampai) %></p>
+
+<section class="baris-kpi" aria-label="Ringkasan">
+  <article class="kpi">
+    <h2 class="kpi-label">Pipeline terbuka</h2>
+    <div class="kpi-nilai"><%= f.rupiah(r.deal.pipeline_nilai).replace(/,00$/, '') %></div>
+    <p class="kpi-sub"><%= r.deal.pipeline_jumlah %> deal · tertimbang <%= f.rupiah(r.deal.pipeline_tertimbang).replace(/,00$/, '') %></p>
+  </article>
+  <article class="kpi">
+    <h2 class="kpi-label">Menang (periode)</h2>
+    <div class="kpi-nilai"><%= f.rupiah(r.deal.menang_nilai).replace(/,00$/, '') %></div>
+    <p class="kpi-sub"><%= r.deal.menang_jumlah %> deal menang · <%= r.deal.kalah_jumlah %> kalah</p>
+  </article>
+  <article class="kpi">
+    <h2 class="kpi-label">Win rate</h2>
+    <div class="kpi-nilai"><%= persen(r.winRate) %></div>
+    <p class="kpi-sub">menang ÷ (menang + kalah) di periode</p>
+  </article>
+  <article class="kpi">
+    <h2 class="kpi-label">Konversi lead</h2>
+    <div class="kpi-nilai"><%= persen(r.konversi) %></div>
+    <p class="kpi-sub"><%= r.lead.dikonversi %> dari <%= r.lead.masuk %> lead masuk periode ini</p>
+  </article>
+  <article class="kpi">
+    <h2 class="kpi-label">Penawaran terkirim</h2>
+    <div class="kpi-nilai"><%= r.penawaran.jumlah %></div>
+    <p class="kpi-sub">senilai <%= f.rupiah(r.penawaran.nilai).replace(/,00$/, '') %></p>
+  </article>
+</section>
+
+<div class="grid-grafik">
+  <section class="kartu">
+    <h2>Nilai pipeline per tahap</h2>
+    <p class="redup kecil">Deal terbuka saat ini, semua periode</p>
+    <div class="wadah-grafik"><canvas data-grafik="<%= JSON.stringify(grafikTahap) %>" role="img"
+      aria-label="Grafik batang nilai pipeline per tahap. Data lengkap ada di tabel di bawah."></canvas></div>
+    <details class="tabel-data">
+      <summary>Lihat sebagai tabel</summary>
+      <table>
+        <thead><tr><th>Tahap</th><th class="angka">Deal</th><th class="angka">Nilai</th><th class="angka">Peluang</th></tr></thead>
+        <tbody><% perTahap.forEach(t => { %><tr><td><%= t.nama %></td><td class="angka"><%= t.jumlah %></td><td class="angka"><%= f.rupiah(t.nilai) %></td><td class="angka"><%= t.peluang_persen %>%</td></tr><% }) %></tbody>
+      </table>
+    </details>
+  </section>
+  <section class="kartu">
+    <h2>Deal menang vs kalah per bulan</h2>
+    <p class="redup kecil">Jumlah deal ditutup, 6 bulan sampai akhir periode</p>
+    <div class="wadah-grafik"><canvas data-grafik="<%= JSON.stringify(grafikTren) %>" role="img"
+      aria-label="Grafik batang jumlah deal menang dan kalah per bulan. Data lengkap ada di tabel di bawah."></canvas></div>
+    <details class="tabel-data">
+      <summary>Lihat sebagai tabel</summary>
+      <table>
+        <thead><tr><th>Bulan</th><th class="angka">Menang</th><th class="angka">Kalah</th><th class="angka">Nilai menang</th></tr></thead>
+        <tbody><% tren.forEach(t => { %><tr><td><%= labelBulan(t.bulan) %></td><td class="angka"><%= t.menang %></td><td class="angka"><%= t.kalah %></td><td class="angka"><%= f.rupiah(t.nilai_menang) %></td></tr><% }) %></tbody>
+      </table>
+    </details>
+  </section>
+</div>
+
+<section class="kartu">
+  <h2>Kinerja sales</h2>
+  <p class="redup kecil">Lead, deal ditutup, penawaran, dan aktivitas di periode; pipeline = deal terbuka saat ini</p>
+  <div class="tabel-gulir"><table>
+    <thead><tr>
+      <th>Sales</th><th class="angka">Lead masuk</th><th class="angka">Dikonversi</th><th class="angka">Menang</th>
+      <th class="angka">Nilai menang</th><th class="angka">Kalah</th><th class="angka">Win rate</th>
+      <th class="angka">Pipeline</th><th class="angka">Penawaran</th><th class="angka">Aktivitas</th>
+    </tr></thead>
+    <tbody>
+    <% kinerja.forEach(k => { %>
+      <tr>
+        <td><strong><%= k.nama %></strong><br><small class="redup"><%= k.peran %></small></td>
+        <td class="angka"><%= k.lead_masuk %></td><td class="angka"><%= k.lead_konversi %></td>
+        <td class="angka"><%= k.menang %></td><td class="angka"><%= f.rupiah(k.nilai_menang) %></td>
+        <td class="angka"><%= k.kalah %></td><td class="angka"><%= persen(k.win_rate) %></td>
+        <td class="angka"><%= f.rupiah(k.pipeline) %></td><td class="angka"><%= k.penawaran %></td>
+        <td class="angka"><%= k.aktivitas %></td>
+      </tr>
+    <% }) %>
+    <% if (!kinerja.length) { %><tr><td colspan="10" class="redup">Belum ada data.</td></tr><% } %>
+    </tbody>
+  </table></div>
+</section>

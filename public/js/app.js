@@ -32,6 +32,81 @@
     });
   });
 
+  // ---- Grafik dashboard (Chart.js). Data sudah diagregasi di server; di sini hanya digambar. ----
+  var WARNA = { menang: '#0369a1', kalah: '#eb6834', teks: '#475569', grid: '#e2e8f0' };
+  var formatRupiah = function (v) {
+    return 'Rp ' + Number(v).toLocaleString('id-ID', { maximumFractionDigits: 0 });
+  };
+  var formatRingkas = function (v) {
+    var n = Number(v);
+    if (n >= 1e12) return (n / 1e12).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' T';
+    if (n >= 1e9) return (n / 1e9).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' M';
+    if (n >= 1e6) return (n / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + ' jt';
+    return n.toLocaleString('id-ID');
+  };
+
+  function gambarGrafik(akar) {
+    if (!window.Chart) return;
+    var kurangiGerak = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+    window.Chart.defaults.color = WARNA.teks;
+    (akar || document).querySelectorAll('canvas[data-grafik]').forEach(function (kanvas) {
+      if (window.Chart.getChart(kanvas)) return;
+      var d = JSON.parse(kanvas.dataset.grafik);
+      var umum = {
+        responsive: true, maintainAspectRatio: false, animation: kurangiGerak ? false : { duration: 400 },
+        interaction: { mode: 'index', intersect: false },
+      };
+      if (d.jenis === 'tahap') {
+        new window.Chart(kanvas, {
+          type: 'bar',
+          data: { labels: d.label, datasets: [{ label: 'Nilai pipeline', data: d.nilai, backgroundColor: WARNA.menang,
+            borderRadius: 4, borderSkipped: 'start', maxBarThickness: 26 }] },
+          options: Object.assign({}, umum, {
+            indexAxis: 'y',
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: function (c) { return formatRupiah(c.raw) + ' · ' + d.jumlah[c.dataIndex] + ' deal'; } } },
+            },
+            scales: {
+              x: { beginAtZero: true, grid: { color: WARNA.grid }, border: { display: false }, ticks: { callback: formatRingkas } },
+              y: { grid: { display: false }, border: { display: false } },
+            },
+          }),
+        });
+      } else if (d.jenis === 'tren') {
+        new window.Chart(kanvas, {
+          type: 'bar',
+          data: { labels: d.label, datasets: [
+            { label: 'Menang', data: d.menang, backgroundColor: WARNA.menang, borderRadius: 4, borderSkipped: 'start', maxBarThickness: 22 },
+            { label: 'Kalah', data: d.kalah, backgroundColor: WARNA.kalah, borderRadius: 4, borderSkipped: 'start', maxBarThickness: 22 },
+          ] },
+          options: Object.assign({}, umum, {
+            datasets: { bar: { categoryPercentage: 0.7, barPercentage: 0.9 } },
+            plugins: { legend: { position: 'top', align: 'end', labels: { boxWidth: 12, boxHeight: 12, useBorderRadius: true, borderRadius: 3 } } },
+            scales: {
+              y: { beginAtZero: true, grid: { color: WARNA.grid }, border: { display: false }, ticks: { precision: 0 } },
+              x: { grid: { display: false }, border: { display: false } },
+            },
+          }),
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    gambarGrafik(document);
+    document.body.addEventListener('htmx:beforeSwap', function (e) {
+      // Bersihkan instance grafik lama sebelum isinya diganti
+      if (!window.Chart) return;
+      e.detail.target.querySelectorAll('canvas[data-grafik]').forEach(function (k) {
+        var c = window.Chart.getChart(k);
+        if (c) c.destroy();
+      });
+    });
+    document.body.addEventListener('htmx:afterSwap', function (e) { gambarGrafik(e.detail.target); });
+  });
+
   document.addEventListener('DOMContentLoaded', function () {
     // Formulir dengan atribut data-konfirmasi meminta konfirmasi sebelum dikirim
     document.addEventListener('submit', function (e) {
