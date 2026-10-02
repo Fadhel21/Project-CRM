@@ -1,0 +1,4 @@
+<ul class="daftar-linimasa">
+  <% tugas.forEach(item => { %><%- include('../../partials/item-linimasa', { item, tampilKonteks: true }) %><% }) %>
+  <% if (!tugas.length) { %><li class="redup">Tidak ada tugas.</li><% } %>
+</ul>

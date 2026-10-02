@@ -75,6 +75,22 @@ form h2 { margin-top: 1.25rem; }
 .lencana-kalah { background: #fef3f2; color: var(--galat); }
 tfoot th { color: var(--teks); font-size: .9rem; text-transform: none; letter-spacing: 0; }
 
+/* Linimasa & aktivitas */
+.form-aktivitas { display: flex; flex-direction: column; gap: .5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--garis); margin-bottom: .5rem; }
+.form-aktivitas .baris { align-items: flex-end; }
+.baris-label { margin: 0; flex: 1; min-width: 180px; }
+.pilihan-jenis { gap: .35rem; }
+.chip { flex-direction: row; align-items: center; gap: .3rem; margin: 0; padding: .3rem .7rem; border: 1px solid var(--garis); border-radius: 999px; font-weight: 400; cursor: pointer; }
+.chip input { width: auto; margin: 0; }
+.chip:has(input:checked) { background: #eef2ff; border-color: var(--utama); color: var(--utama); }
+.daftar-linimasa { list-style: none; margin: 0; padding: 0; }
+.item-linimasa { display: flex; gap: .75rem; padding: .75rem 0; border-bottom: 1px solid var(--garis); }
+.isi-linimasa { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .25rem; }
+.ikon-linimasa { flex: 0 0 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #eef2ff; color: var(--utama); }
+.jenis-tahap .ikon-linimasa { background: #f2f4f7; color: var(--redup); }
+.jenis-tugas .ikon-linimasa { background: #fffaeb; color: var(--peringatan); }
+.item-linimasa.selesai strong { text-decoration: line-through; color: var(--redup); }
+
 /* Kanban */
 .papan-kanban { display: flex; gap: .75rem; overflow-x: auto; padding-bottom: .5rem; align-items: flex-start; }
 .kolom-kanban { flex: 0 0 250px; background: #eceff3; border-radius: var(--radius); padding: .6rem; min-height: 200px; border: 2px dashed transparent; }

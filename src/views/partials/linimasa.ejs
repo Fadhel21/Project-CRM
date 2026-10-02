@@ -1,0 +1,34 @@
+<%# Linimasa + formulir aktivitas cepat. Parameter: linimasa, pemilikTugas, konteks ('kontak'|'deal'|'lead'), konteksId, JENIS %>
+<section class="kartu" id="linimasa">
+  <h2>Linimasa</h2>
+  <form class="form-aktivitas" hx-post="/aktivitas" hx-target="#linimasa" hx-swap="outerHTML"
+    x-data="{ jenis: 'catatan' }">
+    <input type="hidden" name="konteks" value="<%= konteks %>">
+    <input type="hidden" name="<%= konteks %>_id" value="<%= konteksId %>">
+    <div class="baris pilihan-jenis" role="radiogroup" aria-label="Jenis aktivitas">
+      <% Object.entries(JENIS).forEach(([k, v]) => { %>
+        <label class="chip"><input type="radio" name="jenis" value="<%= k %>" x-model="jenis" <%= k === 'catatan' ? 'checked' : '' %>> <%= v %></label>
+      <% }) %>
+    </div>
+    <input name="judul" placeholder="Judul (mis. Telepon follow-up harga)" x-show="jenis !== 'catatan'" x-cloak>
+    <textarea name="isi" rows="2" placeholder="Isi / hasil / catatan…"></textarea>
+    <div class="baris">
+      <label class="baris-label" x-show="jenis !== 'catatan'" x-cloak>
+        <span x-text="jenis === 'tugas' ? 'Tenggat' : 'Waktu'"></span>
+        <input type="datetime-local" name="jadwal_at">
+      </label>
+      <% if (pengguna.peran !== 'sales') { %>
+        <label class="baris-label" x-show="jenis === 'tugas'" x-cloak>Penanggung jawab
+          <select name="pemilik_id">
+            <% pemilikTugas.forEach(p => { %><option value="<%= p.id %>" <%= String(p.id) === String(pengguna.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+          </select>
+        </label>
+      <% } %>
+      <button class="tombol tombol-utama">Simpan</button>
+    </div>
+  </form>
+  <ul class="daftar-linimasa">
+    <% linimasa.forEach(item => { %><%- include('item-linimasa', { item, tampilKonteks: false }) %><% }) %>
+    <% if (!linimasa.length) { %><li class="redup">Belum ada aktivitas.</li><% } %>
+  </ul>
+</section>

@@ -4,6 +4,11 @@ require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env'), quiet
 
 const uji = process.env.NODE_ENV === 'test';
 
+// Zona waktu aplikasi (tampilan tanggal di Node dan sesi PostgreSQL)
+const zonaWaktu = process.env.ZONA_WAKTU || 'Asia/Jakarta';
+if (!/^[A-Za-z_]+\/[A-Za-z_]+$/.test(zonaWaktu)) throw new Error('ZONA_WAKTU di .env tidak valid');
+process.env.TZ = zonaWaktu;
+
 function wajib(nama) {
   const nilai = process.env[nama];
   if (!nilai) throw new Error(`Variabel lingkungan ${nama} belum diisi di .env`);
@@ -13,6 +18,7 @@ function wajib(nama) {
 module.exports = {
   uji,
   produksi: process.env.NODE_ENV === 'production',
+  zonaWaktu,
   port: Number(process.env.PORT || 3000),
   databaseUrl: uji ? wajib('DATABASE_URL_TEST') : wajib('DATABASE_URL'),
   jwtSecret: wajib('JWT_SECRET'),

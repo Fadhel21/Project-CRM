@@ -31,13 +31,7 @@
     <input name="alasan_kalah" placeholder="Alasan kalah (wajib)" class="lebar-cari" x-show="kalah.includes(tahap)" x-cloak>
     <button class="tombol tombol-utama">Pindahkan</button>
   </form>
-  <h2 class="jarak-atas">Riwayat tahap</h2>
-  <ul class="daftar-riwayat">
-    <% riwayatTahap.forEach(r => { %>
-      <li><strong><%= r.pengguna || 'Sistem' %></strong>: <%= r.dari ? `${r.dari} → ${r.ke}` : `dibuat di ${r.ke}` %>
-        <br><small class="redup"><%= f.tanggalJam(r.created_at) %></small></li>
-    <% }) %>
-  </ul>
 </section>
+<%- include('../../partials/linimasa') %>
 <%- include('../../partials/riwayat') %>
 <%- include('../../partials/bawah') %>

@@ -12,6 +12,7 @@ const lead = require('./controllers/lead');
 const leadService = require('./services/lead');
 const deal = require('./controllers/deal');
 const dealService = require('./services/deal');
+const aktivitas = require('./controllers/aktivitas');
 
 const r = express.Router();
 const admin = butuhPeran('admin');
@@ -76,5 +77,11 @@ r.get('/deal/:id(\\d+)/ubah', aksesDeal, deal.formUbah);
 r.post('/deal/:id(\\d+)', aksesDeal, deal.simpan);
 r.post('/deal/:id(\\d+)/tahap', aksesDeal, deal.pindahTahap);
 r.post('/deal/:id(\\d+)/hapus', aksesDeal, deal.hapus);
+
+// Aktivitas, linimasa, tugas (hak akses diperiksa di service: induk & penanggung jawab)
+r.get('/tugas', aktivitas.daftarTugas);
+r.post('/aktivitas', aktivitas.buat);
+r.post('/aktivitas/:id(\\d+)/selesai', aktivitas.tandaiSelesai);
+r.post('/aktivitas/:id(\\d+)/hapus', aktivitas.hapus);
 
 module.exports = r;

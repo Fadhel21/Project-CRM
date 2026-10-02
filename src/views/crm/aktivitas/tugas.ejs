@@ -1,0 +1,19 @@
+<%- include('../../partials/atas') %>
+<section class="kartu">
+  <form class="baris" hx-get="/tugas" hx-target="#hasil" hx-push-url="true" hx-trigger="change">
+    <div class="baris pilihan-jenis" role="radiogroup" aria-label="Filter waktu">
+      <% Object.entries(LABEL_FILTER).forEach(([k, v]) => { %>
+        <label class="chip"><input type="radio" name="filter" value="<%= k %>" <%= filter === k ? 'checked' : '' %>> <%= v %></label>
+      <% }) %>
+    </div>
+    <% if (pengguna.peran !== 'sales') { %>
+      <select name="pemilik" class="lebar-pendek">
+        <option value="">Semua penanggung jawab</option>
+        <% pemilik.forEach(p => { %><option value="<%= p.id %>" <%= String(pemilikId) === String(p.id) ? 'selected' : '' %>><%= p.nama %></option><% }) %>
+      </select>
+    <% } %>
+  </form>
+  <p class="redup">Tugas dibuat dari halaman kontak, deal, atau lead (bagian Linimasa).</p>
+  <div id="hasil"><%- include('tabel') %></div>
+</section>
+<%- include('../../partials/bawah') %>

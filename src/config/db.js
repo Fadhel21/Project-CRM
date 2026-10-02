@@ -8,7 +8,8 @@ types.setTypeParser(20, (v) => v);
 // DATE (1082) dibiarkan string 'YYYY-MM-DD' agar tidak bergeser karena zona waktu
 types.setTypeParser(1082, (v) => v);
 
-const pool = new Pool({ connectionString: env.databaseUrl, max: 10 });
+// Zona waktu sesi DB disamakan dengan aplikasi, sehingga input '2026-10-05T09:00' dibaca sebagai WIB
+const pool = new Pool({ connectionString: env.databaseUrl, max: 10, options: `-c timezone=${env.zonaWaktu}` });
 
 function query(sql, params, klien) {
   return (klien || pool).query(sql, params);

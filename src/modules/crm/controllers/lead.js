@@ -5,6 +5,7 @@ const perusahaanService = require('../services/perusahaan');
 const penggunaService = require('../services/pengguna');
 const duplikatService = require('../services/duplikat');
 const audit = require('../services/audit');
+const { dataLinimasa } = require('./aktivitas');
 
 async function daftar(req, res, next) {
   try {
@@ -23,9 +24,12 @@ async function daftar(req, res, next) {
 
 async function detail(req, res, next) {
   try {
-    const riwayat = await audit.riwayat('lead', req.data.id);
+    const [riwayat, lm] = await Promise.all([
+      audit.riwayat('lead', req.data.id),
+      dataLinimasa(req.pengguna, 'lead', req.data.id),
+    ]);
     res.render('crm/lead/detail', {
-      judul: req.data.nama, data: req.data, riwayat, STATUS: leadService.STATUS, pesan: req.query.pesan || null });
+      judul: req.data.nama, data: req.data, riwayat, ...lm, STATUS: leadService.STATUS, pesan: req.query.pesan || null });
   } catch (err) {
     next(err);
   }

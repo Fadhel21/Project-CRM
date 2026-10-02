@@ -4,6 +4,7 @@ const kontakService = require('../services/kontak');
 const perusahaanService = require('../services/perusahaan');
 const penggunaService = require('../services/pengguna');
 const audit = require('../services/audit');
+const { dataLinimasa } = require('./aktivitas');
 
 async function daftar(req, res, next) {
   try {
@@ -42,13 +43,13 @@ async function kanban(req, res, next) {
 
 async function detail(req, res, next) {
   try {
-    const [tahap, riwayatTahap, riwayat] = await Promise.all([
+    const [tahap, riwayat, lm] = await Promise.all([
       dealService.daftarTahap(),
-      dealService.riwayatTahap(req.data.id),
       audit.riwayat('deal', req.data.id),
+      dataLinimasa(req.pengguna, 'deal', req.data.id),
     ]);
     res.render('crm/deal/detail', {
-      judul: req.data.judul, data: req.data, tahap, riwayatTahap, riwayat, galat: [], pesan: req.query.pesan || null });
+      judul: req.data.judul, data: req.data, tahap, riwayat, ...lm, galat: [], pesan: req.query.pesan || null });
   } catch (err) {
     next(err);
   }
