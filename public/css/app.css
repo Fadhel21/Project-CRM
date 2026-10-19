@@ -213,6 +213,17 @@ dl.info dd { margin: 0; }
 #dasbor > .kartu:last-child { margin-top: var(--s-4); }
 @media (max-width: 800px) { .grid-grafik { grid-template-columns: 1fr; } }
 
+/* ---------- Pengaturan ---------- */
+.tab-halaman { display: flex; gap: var(--s-1); flex-wrap: wrap; margin-bottom: var(--s-4); }
+.tab-halaman a { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--garis); background: var(--permukaan); color: var(--navy-700); font-weight: 600; font-size: .88rem; }
+.tab-halaman a:hover { border-color: var(--utama); color: var(--utama-gelap); text-decoration: none; }
+.kartu[id] { scroll-margin-top: var(--s-4); }
+.kecil-info { font-size: .85rem; margin: 0 0 var(--s-3); }
+.baris-nonaktif td { opacity: .55; }
+.geser { gap: 0; }
+.tombol-ikon-kecil { width: 32px; height: 32px; }
+td input { min-height: 36px; }
+
 /* ---------- Penawaran ---------- */
 .lencana-abu { background: var(--permukaan-2); color: var(--slate-600); }
 .lencana-peringatan { background: var(--peringatan-lembut); color: var(--peringatan); }

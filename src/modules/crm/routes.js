@@ -4,6 +4,7 @@ const { wajibLogin } = require('../../middleware/auth');
 const { butuhPeran, pastikanAkses } = require('../../middleware/akses');
 const pengguna = require('./controllers/pengguna');
 const laporan = require('./controllers/laporan');
+const pengaturan = require('./controllers/pengaturan');
 const perusahaan = require('./controllers/perusahaan');
 const kontak = require('./controllers/kontak');
 const perusahaanService = require('./services/perusahaan');
@@ -48,6 +49,17 @@ r.get('/pengguna/:id(\\d+)/ubah', admin, pengguna.formUbah);
 r.post('/pengguna/:id(\\d+)', admin, pengguna.simpan);
 r.post('/tim', admin, pengguna.simpanTim);
 r.post('/tim/:id(\\d+)', admin, pengguna.simpanTim);
+
+// Pengaturan (admin)
+r.get('/pengaturan', admin, pengaturan.halaman);
+r.post('/pengaturan', admin, pengaturan.simpanNilai);
+r.post('/pengaturan/tahap', admin, pengaturan.simpanTahap);
+r.post('/pengaturan/tahap/:id(\\d+)', admin, pengaturan.simpanTahap);
+r.post('/pengaturan/tahap/:id(\\d+)/geser', admin, pengaturan.geserTahap);
+r.post('/pengaturan/tahap/:id(\\d+)/aktif', admin, pengaturan.aktifTahap);
+r.post('/pengaturan/sumber', admin, pengaturan.simpanSumber);
+r.post('/pengaturan/sumber/:id(\\d+)', admin, pengaturan.simpanSumber);
+r.post('/pengaturan/sumber/:id(\\d+)/aktif', admin, pengaturan.aktifSumber);
 
 // Perusahaan & kontak (akses per baris diperiksa oleh pastikanAkses + filter di service)
 const aksesPerusahaan = pastikanAkses(perusahaanService.ambil);

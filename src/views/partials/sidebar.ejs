@@ -25,6 +25,7 @@
     ] },
     { id: 'admin', label: 'Administrasi', ikon: 'admin', peran: ['admin'], anak: [
       { url: '/pengguna', label: 'Pengguna & Tim', ikon: 'pengguna' },
+      { url: '/pengaturan', label: 'Pengaturan', ikon: 'pengaturan' },
     ] },
   ];
   const cocok = (u) => (u === '/' ? jalur === '/' : jalur === u || jalur.startsWith(`${u}/`));

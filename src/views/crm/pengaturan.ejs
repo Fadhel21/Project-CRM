@@ -1,0 +1,113 @@
+<%- include('../partials/atas') %>
+<% if (pesan) { %><div class="notif notif-sukses" role="status"><%= pesan %></div><% } %>
+<%- include('../partials/galat-form') %>
+
+<nav class="tab-halaman" aria-label="Bagian pengaturan">
+  <a href="#umum">Umum & penawaran</a><a href="#tahap">Tahap pipeline</a><a href="#sumber">Sumber lead</a>
+</nav>
+
+<section class="kartu" id="umum">
+  <h2>Umum & penawaran</h2>
+  <form method="post" action="/pengaturan" class="form-sempit">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label>Nama perusahaan <small class="redup">tampil di kop PDF penawaran</small>
+      <input name="nama_perusahaan" value="<%= nilai.nama_perusahaan || '' %>" maxlength="120" required></label>
+    <div class="grid">
+      <label>Tarif PPN (%) <input name="pajak_persen" value="<%= nilai.pajak_persen %>" inputmode="decimal" required></label>
+      <label>Batas diskon (%) <input name="diskon_maks_persen" value="<%= nilai.diskon_maks_persen %>" inputmode="decimal" required></label>
+    </div>
+    <div class="grid">
+      <label>Masa berlaku penawaran (hari) <input name="penawaran_berlaku_hari" value="<%= nilai.penawaran_berlaku_hari %>" inputmode="numeric" required></label>
+      <label>Pengingat tugas (menit sebelum) <input name="pengingat_menit_sebelum" value="<%= nilai.pengingat_menit_sebelum %>" inputmode="numeric" required></label>
+    </div>
+    <label>Syarat & ketentuan default <textarea name="penawaran_syarat" rows="3" maxlength="2000"><%= nilai.penawaran_syarat || '' %></textarea></label>
+    <p class="redup kecil-info">Perubahan tarif PPN hanya berlaku untuk penawaran baru. Penawaran yang sudah ada tetap memakai tarif saat dibuat.</p>
+    <button class="tombol tombol-utama">Simpan pengaturan</button>
+  </form>
+</section>
+
+<section class="kartu" id="tahap">
+  <h2>Tahap pipeline</h2>
+  <p class="redup kecil-info">Urutan tahap terbuka bisa digeser. Tahap Menang/Kalah selalu di akhir dan tidak bisa dinonaktifkan. Tahap yang masih berisi deal tidak bisa dinonaktifkan.</p>
+  <div class="tabel-gulir"><table>
+    <thead><tr><th>Urutan</th><th>Nama tahap</th><th class="angka">Peluang %</th><th>Jenis</th><th class="angka">Deal</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    <% tahap.forEach((t, i) => { const terbuka = t.jenis === 'terbuka'; %>
+      <tr class="<%= t.aktif ? '' : 'baris-nonaktif' %>">
+        <td>
+          <% if (terbuka) { %>
+            <div class="baris geser">
+              <% [['atas', 'naik', 'Naikkan'], ['bawah', 'turun', 'Turunkan']].forEach(([arah, ikon, label]) => { %>
+                <form method="post" action="/pengaturan/tahap/<%= t.id %>/geser">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="arah" value="<%= arah %>">
+                  <button class="tombol-ikon tombol-ikon-kecil" aria-label="<%= label %> <%= t.nama %>"><%- include('../partials/ikon', { nama: ikon, ukuran: 16 }) %></button>
+                </form>
+              <% }) %>
+            </div>
+          <% } else { %><span class="redup">–</span><% } %>
+        </td>
+        <td><input form="f-tahap-<%= t.id %>" name="nama" value="<%= t.nama %>" maxlength="60" required aria-label="Nama tahap"></td>
+        <td class="angka"><input form="f-tahap-<%= t.id %>" name="peluang_persen" value="<%= t.peluang_persen %>" inputmode="numeric" class="angka lebar-angka" aria-label="Peluang <%= t.nama %>"></td>
+        <td><span class="lencana <%= t.jenis === 'menang' ? 'lencana-menang' : t.jenis === 'kalah' ? 'lencana-kalah' : '' %>"><%= t.jenis %></span></td>
+        <td class="angka"><%= t.jumlah_deal %></td>
+        <td><%= t.aktif ? 'Aktif' : 'Nonaktif' %></td>
+        <td>
+          <div class="baris">
+            <form id="f-tahap-<%= t.id %>" method="post" action="/pengaturan/tahap/<%= t.id %>">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="tombol tombol-kecil">Simpan</button>
+            </form>
+            <% if (terbuka) { %>
+              <form method="post" action="/pengaturan/tahap/<%= t.id %>/aktif">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="aktif" value="<%= t.aktif ? '0' : '1' %>">
+                <button class="tombol tombol-kecil <%= t.aktif ? 'tombol-bahaya' : '' %>"><%= t.aktif ? 'Nonaktifkan' : 'Aktifkan' %></button>
+              </form>
+            <% } %>
+          </div>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table></div>
+  <form class="baris jarak-atas" method="post" action="/pengaturan/tahap">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input name="nama" placeholder="Nama tahap baru, mis. Demo produk" class="lebar-sedang" maxlength="60" required aria-label="Nama tahap baru">
+    <input name="peluang_persen" placeholder="Peluang %" inputmode="numeric" class="lebar-angka" required aria-label="Peluang tahap baru">
+    <button class="tombol">+ Tambah tahap</button>
+  </form>
+</section>
+
+<section class="kartu" id="sumber">
+  <h2>Sumber lead</h2>
+  <div class="tabel-gulir"><table>
+    <thead><tr><th>Nama sumber</th><th class="angka">Lead</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    <% sumber.forEach(s => { %>
+      <tr class="<%= s.aktif ? '' : 'baris-nonaktif' %>">
+        <td><input form="f-sumber-<%= s.id %>" name="nama" value="<%= s.nama %>" maxlength="60" required aria-label="Nama sumber"></td>
+        <td class="angka"><%= s.jumlah_lead %></td>
+        <td><%= s.aktif ? 'Aktif' : 'Nonaktif' %></td>
+        <td>
+          <div class="baris">
+            <form id="f-sumber-<%= s.id %>" method="post" action="/pengaturan/sumber/<%= s.id %>">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="tombol tombol-kecil">Simpan</button>
+            </form>
+            <form method="post" action="/pengaturan/sumber/<%= s.id %>/aktif">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>"><input type="hidden" name="aktif" value="<%= s.aktif ? '0' : '1' %>">
+              <button class="tombol tombol-kecil <%= s.aktif ? 'tombol-bahaya' : '' %>"><%= s.aktif ? 'Nonaktifkan' : 'Aktifkan' %></button>
+            </form>
+          </div>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table></div>
+  <p class="redup kecil-info">Sumber yang dinonaktifkan tidak muncul di formulir lead baru, tetapi lead lama tetap menyimpannya.</p>
+  <form class="baris" method="post" action="/pengaturan/sumber">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input name="nama" placeholder="Nama sumber baru, mis. Iklan Google" class="lebar-sedang" maxlength="60" required aria-label="Nama sumber baru">
+    <button class="tombol">+ Tambah sumber</button>
+  </form>
+</section>
+<%- include('../partials/bawah') %>
