@@ -14,7 +14,7 @@ const dealService = require('./deal');
 const pengaturanService = require('./pengaturan');
 const emailService = require('./email');
 const pdfPenawaran = require('./pdf-penawaran');
-const { tanggal } = require('./format');
+const { tanggal, rupiah } = require('./format');
 const { GalatValidasi, teks, teksAtauNull, uang, desimal, idAtauNull, emailValid } = require('./validasi');
 const { UKURAN_HALAMAN, galat404, nomorHalaman, polaCari } = require('./umum');
 
@@ -334,7 +334,7 @@ async function kirim(id, input, pengguna) {
     await k.query(
       `INSERT INTO aktivitas (jenis, judul, isi, selesai_at, kontak_id, deal_id, pemilik_id, dibuat_oleh)
        VALUES ('email', $1, $2, now(), $3, $4, $5, $5)`,
-      [`Penawaran ${p.nomor} dikirim`, `Total ${p.total}`, p.kontak_id, p.deal_id, pengguna.id]);
+      [`Penawaran ${p.nomor} dikirim`, `Total ${rupiah(p.total)}`, p.kontak_id, p.deal_id, pengguna.id]);
   });
 }
 
